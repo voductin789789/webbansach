@@ -79,17 +79,3 @@ Dự án tuân thủ nghiêm ngặt bảng màu thương mại điện tử chuy
 
 ---
 
-## 👥 4. BẢNG PHÂN CÔNG NHIỆM VỤ NHÓM 6 THÀNH VIÊN
-
-| STT | Thành Viên & Vai Trò | Trọng Trách & Module Phụ Trách | Tiến Độ Giao Diện | Giai Đoạn Backend Kế Tiếp |
-| :---: | :--- | :--- | :---: | :--- |
-| **1** | **Thành viên 1**<br>*(Leader)* | Quản lý dự án Git, Kiến trúc hệ thống, Phụ trách **Admin Dashboard** | Hoàn thành | Xây dựng trang Admin quản lý kho sách, thống kê biểu đồ doanh thu (Chart.js) |
-| **2** | **Thành viên 2**<br>*(Backend Dev 1)* | Thiết kế **Cơ sở dữ liệu (MySQL)**, Module **Sản phẩm & Danh mục** | Hoàn thành | Viết API đổ dữ liệu sách ra trang chủ, xử lý bộ lọc tìm kiếm nâng cao |
-| **3** | **Thành viên 3**<br>*(Backend Dev 2)* | Module **Giỏ hàng, Đơn hàng & Thanh toán Online** | Hoàn thành | Xử lý lưu đơn hàng, trừ kho, tích hợp cổng thanh toán VNPAY / VietQR |
-| **4** | **Thành viên 4**<br>*(Backend Dev 3)* | Module **Xác thực Tài khoản, Bảo mật & Email** | Hoàn thành | Xử lý Đăng ký/Đăng nhập mã hoá Bcrypt, gửi email xác nhận đơn tự động |
-| **5** | **Thành viên 5**<br>*(Frontend Master)* | Tối ưu hóa **Giao diện UI/UX, Hiệu ứng & Kết nối API** | Hoàn thành | Nối API Backend vào giao diện, thêm Skeleton Loading, tối ưu Responsive |
-| **6** | **Thành viên 6**<br>*(QA & Documentation)* | **Kiểm thử (QA/QC), Báo cáo Đồ án (Word) & Slide** | Hoàn thành | Lập bảng Test Case bắt lỗi, soạn tài liệu báo cáo đồ án Word và Slide thuyết trình |
-
----
-
-## 📁 5. CẤU TRÚC THƯ MỤC DỰ ÁN
