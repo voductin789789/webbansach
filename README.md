@@ -18,10 +18,7 @@
 1. [Giới Thiệu Dự Án](#-1-giới-thiệu-dự-án)
 2. [Các Quy Tắc Thiết Kế Áp Dụng](#-2-các-quy-tắc-thiết-kế-áp-dụng)
 3. [Danh Sách Trang & Tính Năng Giao Diện](#-3-danh-sách-trang--tính-năng-giao-diện)
-4. [Bảng Phân Công Nhiệm Vụ Nhóm 6 Thành Viên](#-4-bảng-phân-công-nhiệm-vụ-nhóm-6-thành-viên)
-5. [Cấu Trúc Thư Mục Dự Án](#-5-cấu-trúc-thư-mục-dự-án)
-6. [Hướng Dẫn Cài Đặt & Chạy Thử](#-6-hướng-dẫn-cài-đặt--chạy-thử)
-7. [Lộ Trình Phát Triển Tiếp Theo (Backend Roadmap)](#-7-lộ-trình-phát-triển-tiếp-theo-backend-roadmap)
+
 
 ---
 
