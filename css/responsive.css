@@ -1,0 +1,293 @@
+/* ==========================================================================
+   RESPONSIVE STYLESHEET
+   Tuân thủ quy tắc thiết kế 2.6:
+   - Desktop (> 1024px): Full layout, 4 sách/dòng, sidebar hiển thị.
+   - Tablet (768px - 1024px): 2 sách/dòng, hero điều chỉnh, header gọn gàng.
+   - Mobile (< 768px): Menu hamburger, 1 sách/dòng, form thu gọn, CTA full-width.
+   ========================================================================== */
+
+/* TABLET (768px đến 1024px) */
+@media screen and (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-banners-side {
+    flex-direction: row;
+  }
+
+  .books-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 sách/hàng trên Tablet */
+    gap: 15px;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  .product-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .main-image-container {
+    height: 360px;
+  }
+
+  .reviews-container {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-layout {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* MOBILE (< 768px) */
+@media screen and (max-width: 768px) {
+  .top-bar {
+    display: none; /* Ẩn top-bar trên di động để tiết kiệm không gian */
+  }
+
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .logo {
+    order: 1;
+  }
+
+  .header-actions {
+    order: 2;
+    gap: 10px;
+  }
+
+  .action-text {
+    display: none; /* Chỉ hiện icon giỏ hàng và tài khoản */
+  }
+
+  .mobile-toggle {
+    display: block; /* Nút hamburger */
+    order: 3;
+  }
+
+  .header-search {
+    order: 4;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 5px;
+  }
+
+  .search-category {
+    display: none; /* Ẩn lọc danh mục trong search trên mobile */
+  }
+
+  /* Navigation Mobile */
+  .main-nav {
+    display: none; /* Mặc định ẩn, bật lên khi bấm hamburger */
+    padding: 10px 0;
+  }
+
+  .main-nav.active {
+    display: block;
+  }
+
+  .nav-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .category-dropdown {
+    width: 100%;
+  }
+
+  .category-btn {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: var(--radius-sm);
+  }
+
+  .category-menu {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+    border-top: none;
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .nav-menu li {
+    width: 100%;
+  }
+
+  .nav-menu li a {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-hotline {
+    padding: 10px 14px;
+    justify-content: center;
+  }
+
+  /* Hero & Slider Mobile */
+  .hero-slider {
+    min-height: auto;
+    padding: 20px 10px;
+  }
+
+  .slide-item.active {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .slide-content {
+    max-width: 100%;
+  }
+
+  .slide-title {
+    font-size: 22px;
+  }
+
+  .slide-desc {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .slide-img {
+    max-width: 60%;
+    margin-bottom: 15px;
+  }
+
+  .slide-img img {
+    max-height: 200px;
+  }
+
+  .hero-slider-nav {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .hero-banners-side {
+    flex-direction: column;
+  }
+
+  /* Grid sách Mobile: 1 sách/hàng hoặc 2 sách/hàng nhỏ */
+  .books-grid {
+    grid-template-columns: 1fr; /* 1 sách/hàng theo tài liệu thiết kế */
+  }
+
+  .book-cover {
+    height: 220px;
+  }
+
+  .btn-add-cart {
+    padding: 12px;
+  }
+
+  /* Danh mục & Tiện ích */
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Banner Promo */
+  .promo-box {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px 20px;
+    gap: 20px;
+  }
+
+  .promo-text h2 {
+    font-size: 22px;
+  }
+
+  /* Footer Mobile */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  /* Chi tiết sản phẩm Mobile */
+  .product-detail-grid {
+    padding: 15px;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+  }
+
+  .btn-add-to-cart-large,
+  .btn-buy-now-large {
+    width: 100%;
+  }
+
+  .product-perks {
+    grid-template-columns: 1fr;
+  }
+
+  /* Shop Layout Mobile */
+  .shop-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-sidebar {
+    display: none; /* Có nút bật mở bộ lọc */
+  }
+
+  .shop-sidebar.active {
+    display: block;
+  }
+
+  /* Giỏ hàng Mobile */
+  .cart-table thead {
+    display: none;
+  }
+
+  .cart-table, .cart-table tbody, .cart-table tr, .cart-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .cart-table tr {
+    border-bottom: 2px solid var(--border-color);
+    padding: 12px 0;
+  }
+
+  .cart-table td {
+    padding: 6px 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cart-item-info {
+    justify-content: flex-start;
+  }
+}
+

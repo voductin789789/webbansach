@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ Hàng Của Bạn - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-phone"></i> Hotline: 1900 6868</span>
+        <span><i class="fa-solid fa-envelope"></i> hotro@bookstore.vn</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="contact.html"><i class="fa-solid fa-location-dot"></i> Hệ thống nhà sách</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <a href="index.html">
+            <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div class="logo-text"><h1>BookStore</h1><span>Thế Giới Tri Thức</span></div>
+          </a>
+        </div>
+
+        <div class="header-search">
+          <form class="search-form" action="shop.html" method="GET" onsubmit="return false;">
+            <input type="text" class="search-input" placeholder="Tìm tên sách..." autocomplete="off">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <div class="search-suggest-box"></div>
+        </div>
+
+        <div class="header-actions">
+          <a href="#login" class="action-item open-auth-modal" title="Tài khoản">
+            <div class="action-icon"><i class="fa-regular fa-user"></i></div>
+            <div class="action-text"><span>Xin chào!</span><span>Tài khoản</span></div>
+          </a>
+          <a href="cart.html" class="action-item" title="Xem giỏ hàng">
+            <div class="action-icon">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="badge-count">0</span>
+            </div>
+            <div class="action-text"><span>Giỏ hàng</span><span>Mua sắm</span></div>
+          </a>
+          <button class="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <div class="category-dropdown">
+          <div class="category-btn"><i class="fa-solid fa-bars"></i><span>DANH MỤC SÁCH</span></div>
+          <ul class="category-menu">
+            <li><a href="shop.html?cat=van-hoc"><i class="fa-solid fa-feather-pointed"></i> Văn học</a></li>
+            <li><a href="shop.html?cat=kinh-te"><i class="fa-solid fa-chart-line"></i> Kinh tế</a></li>
+            <li><a href="shop.html?cat=ky-nang"><i class="fa-solid fa-seedling"></i> Kỹ năng sống</a></li>
+          </ul>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="shop.html">Danh mục sách</a></li>
+          <li><a href="shop.html?filter=new">Sách mới</a></li>
+          <li><a href="shop.html?filter=sale">Khuyến mãi</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+        <div class="nav-hotline"><i class="fa-solid fa-phone"></i> Hotline: <span>1900 6868</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb-list">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+        <span class="separator">/</span>
+        <span class="current">Giỏ Hàng Của Bạn</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section-title-wrap">
+      <h3 class="section-title"><i class="fa-solid fa-cart-shopping"></i> Giỏ Hàng Trực Tuyến</h3>
+      <a href="shop.html" class="view-all-link"><i class="fa-solid fa-arrow-left"></i> Tiếp tục chọn sách</a>
+    </div>
+
+    <div id="cartEmptyNotice" style="display: none; text-align: center; padding: 60px 20px; background: #FFFFFF; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 40px;">
+      <i class="fa-solid fa-cart-arrow-down" style="font-size: 60px; color: #CBD5E0; margin-bottom: 15px;"></i>
+      <h3 style="font-size: 20px; color: var(--primary-color); margin-bottom: 10px;">Giỏ hàng của bạn đang trống!</h3>
+      <p style="color: var(--text-muted); margin-bottom: 25px;">Hãy khám phá hàng ngàn đầu sách hay và chọn cho mình cuốn sách yêu thích nhé.</p>
+      <a href="shop.html" class="btn-primary"><i class="fa-solid fa-book-open"></i> Mua sắm ngay</a>
+    </div>
+
+    <div class="cart-layout">
+      <div class="cart-table-card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Thông Tin Sách</th>
+              <th>Đơn Giá</th>
+              <th>Số Lượng</th>
+              <th>Thành Tiền</th>
+              <th style="text-align: center;">Xoá</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cart-summary-card">
+        <h4 class="cart-summary-title">Tóm Tắt Đơn Hàng</h4>
+        <div class="summary-row">
+          <span>Tạm tính:</span>
+          <strong id="cartSubtotal" style="color: var(--primary-color);">0₫</strong>
+        </div>
+        <div class="summary-row">
+          <span>Phí vận chuyển:</span>
+          <span>25.000₫</span>
+        </div>
+        <div class="summary-row" style="color: #27AE60;">
+          <span>Giảm giá voucher:</span>
+          <span>-0₫</span>
+        </div>
+
+        <div class="coupon-group">
+          <input type="text" id="couponCode" class="coupon-input" placeholder="Nhập mã (VD: GIAM10)">
+          <button type="button" class="coupon-btn" onclick="applyCoupon()">Áp Dụng</button>
+        </div>
+
+        <div class="summary-row total">
+          <span>Tổng thanh toán:</span>
+          <span id="cartTotal">25.000₫</span>
+        </div>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; text-align: right;">(Đã bao gồm thuế VAT)</p>
+
+        <a href="checkout.html" class="btn-checkout">
+          Tiến Hành Đặt Hàng <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <div style="margin-top: 20px; font-size: 12px; color: var(--text-muted); text-align: center;">
+          <i class="fa-solid fa-shield-halved"></i> Thông tin thanh toán được mã hoá an toàn 100%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2024 BookStore - Dự Án Môn Lập Trình Web.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

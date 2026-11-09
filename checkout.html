@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán Đơn Hàng - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .checkout-steps {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 20px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .step-item.active {
+      color: var(--accent-color);
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .step-item.active .step-num {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+    .step-divider {
+      color: var(--text-light);
+      align-self: center;
+    }
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1.2fr;
+      gap: 30px;
+      padding-bottom: 50px;
+    }
+    .checkout-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .checkout-card-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .payment-option {
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .payment-option:hover, .payment-option.active {
+      border-color: var(--accent-color);
+      background: #FFFBFB;
+    }
+    .payment-option input[type="radio"] {
+      accent-color: var(--accent-color);
+      width: 18px;
+      height: 18px;
+    }
+    @media (max-width: 768px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+      .checkout-steps {
+        flex-direction: column;
+        align-items: center;
+      }
+      .step-divider {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-phone"></i> Hotline: 1900 6868</span>
+        <span><i class="fa-solid fa-shield-halved"></i> Thanh toán an toàn &amp; bảo mật</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="cart.html"><i class="fa-solid fa-arrow-left"></i> Quay lại giỏ hàng</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER RÚT GỌN CHO CHECKOUT -->
+  <header class="main-header" style="padding: 14px 0;">
+    <div class="container">
+      <div class="header-inner" style="justify-content: space-between;">
+        <div class="logo">
+          <a href="index.html">
+            <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div class="logo-text"><h1>BookStore</h1><span>Thanh Toán Đơn Hàng</span></div>
+          </a>
+        </div>
+        <div style="font-size: 13px; color: #E2E8F0;">
+          <i class="fa-solid fa-lock"></i> Đặt hàng an toàn SSL 256-bit
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb-list">
+        <a href="index.html">Trang chủ</a>
+        <span class="separator">/</span>
+        <a href="cart.html">Giỏ hàng</a>
+        <span class="separator">/</span>
+        <span class="current">Tiến Hành Thanh Toán</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIẾN TRÌNH 3 BƯỚC CHECKOUT -->
+  <div class="container">
+    <div class="checkout-steps">
+      <div class="step-item active">
+        <div class="step-num">1</div>
+        <span>Thông Tin Giao Hàng</span>
+      </div>
+      <div class="step-divider">---------</div>
+      <div class="step-item active">
+        <div class="step-num">2</div>
+        <span>Phương Thức Thanh Toán</span>
+      </div>
+      <div class="step-divider">---------</div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <span>Xác Nhận &amp; Đặt Hàng</span>
+      </div>
+    </div>
+
+    <!-- MAIN CHECKOUT CONTENT -->
+    <div class="checkout-grid">
+      <!-- CỘT BÊN TRÁI: THÔNG TIN GIAO HÀNG & PHƯƠNG THỨC -->
+      <div>
+        <!-- Bước 1: Thông tin giao hàng -->
+        <div class="checkout-card">
+          <h4 class="checkout-card-title"><i class="fa-solid fa-location-dot" style="color: var(--accent-color);"></i> 1. Địa Chỉ Nhận Hàng</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label>Họ và tên người nhận *</label>
+              <input type="text" class="form-control" placeholder="Nguyễn Văn A" required>
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại liên hệ *</label>
+              <input type="tel" class="form-control" placeholder="0901 234 567" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ Email (Nhận thông báo đơn hàng) *</label>
+            <input type="email" class="form-control" placeholder="user@gmail.com" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+              <label>Tỉnh / Thành phố *</label>
+              <select class="form-control">
+                <option>TP. Hồ Chí Minh</option>
+                <option>Hà Nội</option>
+                <option>Đà Nẵng</option>
+                <option>Cần Thơ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quận / Huyện *</label>
+              <select class="form-control">
+                <option>Quận 1</option>
+                <option>Quận 3</option>
+                <option>Quận Bình Thạnh</option>
+                <option>TP. Thủ Đức</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Phường / Xã *</label>
+              <input type="text" class="form-control" placeholder="Phường Bến Nghé" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ chi tiết (Số nhà, tên đường, toà nhà) *</label>
+            <input type="text" class="form-control" placeholder="Số 123 Đường Nguyễn Huệ" required>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú đơn hàng (Tuỳ chọn)</label>
+            <textarea class="form-control" rows="2" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi đến..."></textarea>
+          </div>
+        </div>
+
+        <!-- Bước 2: Phương thức thanh toán -->
+        <div class="checkout-card">
+          <h4 class="checkout-card-title"><i class="fa-solid fa-credit-card" style="color: var(--accent-color);"></i> 2. Chọn Phương Thức Thanh Toán</h4>
+          
+          <label class="payment-option active">
+            <input type="radio" name="paymentMethod" checked>
+            <div>
+              <strong style="color: var(--primary-color); display: block;"><i class="fa-solid fa-money-bill-wave" style="color: #27AE60;"></i> Thanh toán khi nhận hàng (COD)</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Thanh toán bằng tiền mặt khi shipper giao sách tận nơi</span>
+            </div>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod">
+            <div>
+              <strong style="color: var(--primary-color); display: block;"><i class="fa-solid fa-qrcode" style="color: #8E44AD;"></i> Ví điện tử MoMo / ZaloPay / VNPay QR</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Quét mã QR tiện lợi qua ứng dụng ngân hàng hoặc ví điện tử</span>
+            </div>
+          </label>
+
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod">
+            <div>
+              <strong style="color: var(--primary-color); display: block;"><i class="fa-solid fa-credit-card" style="color: #2980B9;"></i> Thẻ ATM Nội Địa / Thẻ Quốc Tế (Visa, Master)</strong>
+              <span style="font-size: 12px; color: var(--text-muted);">Hỗ trợ tất cả ngân hàng tại Việt Nam và thẻ quốc tế</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- CỘT BÊN PHẢI: TÓM TẮT ĐƠN HÀNG & NÚT XÁC NHẬN -->
+      <div>
+        <div class="checkout-card">
+          <h4 class="checkout-card-title"><i class="fa-solid fa-receipt"></i> Đơn Hàng Của Bạn</h4>
+          
+          <!-- Danh sách sách tóm tắt -->
+          <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=150&q=80" style="width: 45px; height: 60px; object-fit: cover; border-radius: 4px;" alt="Đắc Nhân Tâm">
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 13px; color: var(--primary-color);">Đắc Nhân Tâm (Tái Bản 2024)</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Số lượng: 1</div>
+              </div>
+              <div style="font-weight: 700; color: var(--accent-color); font-size: 14px;">79.000₫</div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=150&q=80" style="width: 45px; height: 60px; object-fit: cover; border-radius: 4px;" alt="Nhà Giả Kim">
+              <div style="flex: 1;">
+                <div style="font-weight: 700; font-size: 13px; color: var(--primary-color);">Nhà Giả Kim (Kinh Điển)</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Số lượng: 1</div>
+              </div>
+              <div style="font-weight: 700; color: var(--accent-color); font-size: 14px;">65.000₫</div>
+            </div>
+          </div>
+
+          <!-- Chi tiết giá & phí ship -->
+          <div class="summary-row">
+            <span>Tạm tính (2 cuốn):</span>
+            <strong>144.000₫</strong>
+          </div>
+          <div class="summary-row">
+            <span>Phí vận chuyển chuẩn:</span>
+            <span>25.000₫</span>
+          </div>
+          <div class="summary-row" style="color: #27AE60;">
+            <span>Mã giảm giá (FREESHIP):</span>
+            <span>-25.000₫</span>
+          </div>
+          <div class="summary-row total">
+            <span>Tổng tiền thanh toán:</span>
+            <span>144.000₫</span>
+          </div>
+
+          <div style="margin: 20px 0;">
+            <label style="font-size: 13px; display: flex; align-items: flex-start; gap: 8px; color: var(--text-muted); cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: var(--accent-color); margin-top: 3px;">
+              <span>Tôi đã đọc và đồng ý với <a href="#terms" style="color: var(--accent-color); text-decoration: underline;">Điều khoản dịch vụ &amp; Chính sách bảo mật</a> của BookStore.</span>
+            </label>
+          </div>
+
+          <button type="button" class="btn-checkout" onclick="alert('Chúc mừng bạn đã đặt hàng thành công! Mã đơn hàng: #BS-98234. Chúng tôi đã gửi email xác nhận chi tiết đến hộp thư của bạn.'); localStorage.removeItem('bookstore_cart'); window.location.href='index.html';">
+            <i class="fa-solid fa-lock"></i> XÁC NHẬN ĐẶT HÀNG
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2024 BookStore - Dự Án Môn Lập Trình Web.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>
+

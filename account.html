@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tài Khoản Cá Nhân &amp; Đơn Hàng - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .account-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 30px;
+      padding-bottom: 50px;
+    }
+    .account-sidebar {
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 24px 20px;
+      height: fit-content;
+    }
+    .user-profile-brief {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+    .user-avatar {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .user-name {
+      font-weight: 700;
+      color: var(--primary-color);
+      font-size: 15px;
+    }
+    .user-email {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .account-nav-list li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: var(--transition);
+      margin-bottom: 5px;
+    }
+    .account-nav-list li a:hover,
+    .account-nav-list li a.active {
+      background: var(--accent-light);
+      color: var(--accent-color);
+    }
+    .account-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 30px;
+    }
+    .account-card-title {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .order-status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-shipping { background: #EBF5FB; color: #2980B9; }
+    .status-completed { background: #E8F8F5; color: #27AE60; }
+    .status-cancelled { background: #FDEDEC; color: #E74C3C; }
+    @media (max-width: 768px) {
+      .account-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-phone"></i> Hotline: 1900 6868</span>
+        <span><i class="fa-solid fa-envelope"></i> hotro@bookstore.vn</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="shop.html"><i class="fa-solid fa-book-open"></i> Tiếp tục mua sắm</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <a href="index.html">
+            <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div class="logo-text"><h1>BookStore</h1><span>Thế Giới Tri Thức</span></div>
+          </a>
+        </div>
+
+        <div class="header-search">
+          <form class="search-form" action="shop.html" method="GET" onsubmit="return false;">
+            <input type="text" class="search-input" placeholder="Tìm tên sách, tác giả..." autocomplete="off">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <div class="search-suggest-box"></div>
+        </div>
+
+        <div class="header-actions">
+          <a href="account.html" class="action-item active" style="background: rgba(255,255,255,0.15);" title="Tài khoản">
+            <div class="action-icon"><i class="fa-solid fa-user-check"></i></div>
+            <div class="action-text"><span>Xin chào,</span><span>Nguyễn Văn A</span></div>
+          </a>
+          <a href="cart.html" class="action-item" title="Xem giỏ hàng">
+            <div class="action-icon">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="badge-count">0</span>
+            </div>
+            <div class="action-text"><span>Giỏ hàng</span><span>Mua sắm</span></div>
+          </a>
+          <button class="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="shop.html">Danh mục sách</a></li>
+          <li><a href="shop.html?filter=new">Sách mới</a></li>
+          <li><a href="shop.html?filter=sale">Khuyến mãi</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+        <div class="nav-hotline"><i class="fa-solid fa-phone"></i> Hotline: <span>1900 6868</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb-list">
+        <a href="index.html">Trang chủ</a>
+        <span class="separator">/</span>
+        <span class="current">Tài Khoản &amp; Lịch Sử Mua Hàng</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT SECTION -->
+  <div class="container">
+    <div class="account-layout">
+      <!-- SIDEBAR TÀI KHOẢN -->
+      <aside class="account-sidebar">
+        <div class="user-profile-brief">
+          <div class="user-avatar">A</div>
+          <div>
+            <div class="user-name">Nguyễn Văn A</div>
+            <div class="user-email">nguyenvana@gmail.com</div>
+          </div>
+        </div>
+
+        <ul class="account-nav-list">
+          <li><a href="#orders" class="active" onclick="switchAccountTab('orders', this)"><i class="fa-solid fa-box-archive"></i> Đơn hàng của tôi</a></li>
+          <li><a href="#profile" onclick="switchAccountTab('profile', this)"><i class="fa-regular fa-id-card"></i> Thông tin cá nhân</a></li>
+          <li><a href="#wishlist" onclick="switchAccountTab('wishlist', this)"><i class="fa-regular fa-heart"></i> Sách yêu thích (3)</a></li>
+          <li><a href="#password" onclick="switchAccountTab('password', this)"><i class="fa-solid fa-lock"></i> Đổi mật khẩu</a></li>
+          <li><a href="index.html" onclick="alert('Đã đăng xuất!');"><i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--accent-color);"></i> Đăng xuất</a></li>
+        </ul>
+      </aside>
+
+      <!-- KHỐI NỘI DUNG TÀI KHOẢN -->
+      <main class="account-main">
+        <!-- TAB 1: ĐƠN HÀNG CỦA TÔI -->
+        <div class="account-card" id="tab-orders">
+          <div class="account-card-title">
+            <span><i class="fa-solid fa-clock-rotate-left"></i> Lịch Sử Mua Hàng</span>
+            <span style="font-size: 13px; color: var(--text-muted); font-weight: normal;">Tổng: 2 đơn hàng</span>
+          </div>
+
+          <!-- Đơn hàng 1 -->
+          <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+              <div>
+                <strong>Mã đơn: #BS-98234</strong>
+                <span style="font-size: 12px; color: var(--text-muted); margin-left: 10px;">Đặt ngày: 08/11/2024</span>
+              </div>
+              <span class="order-status-badge status-shipping"><i class="fa-solid fa-truck"></i> Đang giao hàng</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 15px; align-items: center;">
+                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=150&q=80" style="width: 50px; height: 65px; object-fit: cover; border-radius: 4px;" alt="Đắc Nhân Tâm">
+                <div>
+                  <div style="font-weight: 700; color: var(--primary-color);">Đắc Nhân Tâm (Khổ Lớn 2024)</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Số lượng: 1 &bull; Giá: 79.000₫</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; color: var(--text-muted);">Tổng thanh toán:</div>
+                <div style="font-size: 17px; font-weight: 700; color: var(--accent-color);">104.000₫</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Đơn hàng 2 -->
+          <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+              <div>
+                <strong>Mã đơn: #BS-87112</strong>
+                <span style="font-size: 12px; color: var(--text-muted); margin-left: 10px;">Đặt ngày: 20/10/2024</span>
+              </div>
+              <span class="order-status-badge status-completed"><i class="fa-solid fa-circle-check"></i> Đã giao thành công</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 15px; align-items: center;">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=150&q=80" style="width: 50px; height: 65px; object-fit: cover; border-radius: 4px;" alt="Nhà Giả Kim">
+                <div>
+                  <div style="font-weight: 700; color: var(--primary-color);">Nhà Giả Kim (Tác Phẩm Kinh Điển)</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Số lượng: 1 &bull; Giá: 65.000₫</div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; color: var(--text-muted);">Tổng thanh toán:</div>
+                <div style="font-size: 17px; font-weight: 700; color: var(--accent-color);">90.000₫</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: THÔNG TIN CÁ NHÂN -->
+        <div class="account-card" id="tab-profile" style="display: none;">
+          <div class="account-card-title"><i class="fa-regular fa-user"></i> Hồ Sơ Của Tôi</div>
+          <form onsubmit="event.preventDefault(); alert('Cập nhật thông tin thành công!');">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text" class="form-control" value="Nguyễn Văn A" required>
+              </div>
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="tel" class="form-control" value="0901234567" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ Email</label>
+              <input type="email" class="form-control" value="nguyenvana@gmail.com" required>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ giao hàng mặc định</label>
+              <input type="text" class="form-control" value="Số 123 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. HCM" required>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 10px;">Lưu Thay Đổi</button>
+          </form>
+        </div>
+
+        <!-- TAB 3: SÁCH YÊU THÍCH -->
+        <div class="account-card" id="tab-wishlist" style="display: none;">
+          <div class="account-card-title"><i class="fa-solid fa-heart" style="color: var(--accent-color);"></i> Danh Sách Yêu Thích</div>
+          <div class="books-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="book-card" data-id="book-1">
+              <a href="product-detail.html" class="book-cover"><img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80" alt="Đắc Nhân Tâm"></a>
+              <div class="book-details">
+                <h4 class="book-title"><a href="product-detail.html">Đắc Nhân Tâm (Khổ Lớn 2024)</a></h4>
+                <div class="book-price"><span class="current-price">79.000₫</span></div>
+                <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+              </div>
+            </div>
+            <div class="book-card" data-id="book-3">
+              <a href="product-detail.html" class="book-cover"><img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" alt="Tuổi Trẻ"></a>
+              <div class="book-details">
+                <h4 class="book-title"><a href="product-detail.html">Tuổi Trẻ Đáng Giá Bao Nhiêu?</a></h4>
+                <div class="book-price"><span class="current-price">85.000₫</span></div>
+                <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: ĐỔI MẬT KHẨU -->
+        <div class="account-card" id="tab-password" style="display: none;">
+          <div class="account-card-title"><i class="fa-solid fa-key"></i> Đổi Mật Khẩu</div>
+          <form onsubmit="event.preventDefault(); alert('Đổi mật khẩu thành công!'); this.reset();">
+            <div class="form-group">
+              <label>Mật khẩu hiện tại</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Mật khẩu mới</label>
+              <input type="password" class="form-control" placeholder="Tối thiểu 6 ký tự" required>
+            </div>
+            <div class="form-group">
+              <label>Xác nhận mật khẩu mới</label>
+              <input type="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 10px;">Cập Nhật Mật Khẩu</button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2024 BookStore - Dự Án Môn Lập Trình Web.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    function switchAccountTab(tabName, linkEl) {
+      document.querySelectorAll('.account-nav-list li a').forEach(a => a.classList.remove('active'));
+      linkEl.classList.add('active');
+
+      document.querySelectorAll('.account-card').forEach(card => card.style.display = 'none');
+      const targetCard = document.getElementById('tab-' + tabName);
+      if (targetCard) targetCard.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+

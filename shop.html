@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh Mục Sách - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-phone"></i> Hotline: 1900 6868</span>
+        <span><i class="fa-solid fa-envelope"></i> hotro@bookstore.vn</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="contact.html"><i class="fa-solid fa-location-dot"></i> Hệ thống nhà sách</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <a href="index.html">
+            <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div class="logo-text">
+              <h1>BookStore</h1>
+              <span>Thế Giới Tri Thức</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="header-search">
+          <form class="search-form" action="shop.html" method="GET" onsubmit="return false;">
+            <input type="text" class="search-input" placeholder="Tìm kiếm sách trong cửa hàng..." autocomplete="off">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <div class="search-suggest-box"></div>
+        </div>
+
+        <div class="header-actions">
+          <a href="#login" class="action-item open-auth-modal" title="Tài khoản">
+            <div class="action-icon"><i class="fa-regular fa-user"></i></div>
+            <div class="action-text"><span>Xin chào!</span><span>Tài khoản</span></div>
+          </a>
+          <a href="cart.html" class="action-item" title="Xem giỏ hàng">
+            <div class="action-icon">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="badge-count">0</span>
+            </div>
+            <div class="action-text"><span>Giỏ hàng</span><span>Mua sắm</span></div>
+          </a>
+          <button class="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <div class="category-dropdown">
+          <div class="category-btn">
+            <i class="fa-solid fa-bars"></i>
+            <span>DANH MỤC SÁCH</span>
+          </div>
+          <ul class="category-menu">
+            <li><a href="shop.html?cat=van-hoc"><i class="fa-solid fa-feather-pointed"></i> Văn học & Thơ ca</a></li>
+            <li><a href="shop.html?cat=kinh-te"><i class="fa-solid fa-chart-line"></i> Kinh tế - Quản trị</a></li>
+            <li><a href="shop.html?cat=ky-nang"><i class="fa-solid fa-seedling"></i> Kỹ năng sống & Tư duy</a></li>
+            <li><a href="shop.html?cat=thieu-nhi"><i class="fa-solid fa-shapes"></i> Sách Thiếu nhi</a></li>
+            <li><a href="shop.html?cat=khoa-hoc"><i class="fa-solid fa-microchip"></i> Khoa học - Công nghệ</a></li>
+          </ul>
+        </div>
+
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="shop.html" class="active">Cửa hàng sách</a></li>
+          <li><a href="shop.html?filter=new">Sách mới</a></li>
+          <li><a href="shop.html?filter=sale">Khuyến mãi</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+        <div class="nav-hotline"><i class="fa-solid fa-phone"></i> Hotline: <span>1900 6868</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb-list">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+        <span class="separator">/</span>
+        <span class="current">Tất Cả Danh Mục Sách</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="shop-layout">
+      <aside class="shop-sidebar">
+        <div class="filter-block">
+          <h4 class="filter-title">Danh Mục Sách</h4>
+          <ul class="filter-list">
+            <li><label><input type="checkbox" checked> Tất cả danh mục</label></li>
+            <li><label><input type="checkbox"> Văn học (320)</label></li>
+            <li><label><input type="checkbox"> Kinh tế - Quản trị (210)</label></li>
+            <li><label><input type="checkbox"> Kỹ năng sống (185)</label></li>
+            <li><label><input type="checkbox"> Thiếu nhi (140)</label></li>
+            <li><label><input type="checkbox"> Khoa học - CN (95)</label></li>
+            <li><label><input type="checkbox"> Ngoại ngữ (112)</label></li>
+          </ul>
+        </div>
+
+        <div class="filter-block">
+          <h4 class="filter-title">Khoảng Giá</h4>
+          <ul class="filter-list">
+            <li><label><input type="radio" name="price" checked> Tất cả mức giá</label></li>
+            <li><label><input type="radio" name="price"> Dưới 100.000₫</label></li>
+            <li><label><input type="radio" name="price"> 100.000₫ - 200.000₫</label></li>
+            <li><label><input type="radio" name="price"> 200.000₫ - 300.000₫</label></li>
+            <li><label><input type="radio" name="price"> Trên 300.000₫</label></li>
+          </ul>
+        </div>
+
+        <div class="filter-block">
+          <h4 class="filter-title">Nhà Xuất Bản</h4>
+          <ul class="filter-list">
+            <li><label><input type="checkbox"> NXB Trẻ</label></li>
+            <li><label><input type="checkbox"> Nhã Nam</label></li>
+            <li><label><input type="checkbox"> First News - Trí Việt</label></li>
+            <li><label><input type="checkbox"> NXB Kim Đồng</label></li>
+            <li><label><input type="checkbox"> NXB Tổng Hợp TP.HCM</label></li>
+          </ul>
+        </div>
+
+        <div class="filter-block">
+          <h4 class="filter-title">Đánh Giá</h4>
+          <ul class="filter-list">
+            <li>
+              <label>
+                <input type="checkbox">
+                <span style="color: #F39C12;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                <span style="font-size: 12px; color: var(--text-muted);">(Từ 5 sao)</span>
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="checkbox">
+                <span style="color: #F39C12;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span>
+                <span style="font-size: 12px; color: var(--text-muted);">(Từ 4 sao)</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="shop-main">
+        <div class="shop-toolbar">
+          <div class="shop-result-count">
+            Hiển thị <strong>8</strong> trong tổng số <strong>120</strong> đầu sách
+          </div>
+          <div class="shop-sort">
+            <label for="sortSelect">Sắp xếp theo:</label>
+            <select id="sortSelect" class="sort-select">
+              <option value="popular">Nổi bật nhất</option>
+              <option value="bestseller">Bán chạy nhất</option>
+              <option value="price-asc">Giá: Thấp đến Cao</option>
+              <option value="price-desc">Giá: Cao đến Thấp</option>
+              <option value="newest">Sách mới nhất</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="books-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="book-card" data-id="book-1">
+            <span class="book-badge hot">Bán Chạy #1</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80" alt="Đắc Nhân Tâm">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Kỹ năng sống</span>
+              <h4 class="book-title"><a href="product-detail.html">Đắc Nhân Tâm (Khổ Lớn 2024)</a></h4>
+              <div class="book-author">Dale Carnegie</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span class="rating-count">(1.420)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">79.000₫</span>
+                <span class="old-price">110.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="book-card" data-id="book-2">
+            <span class="book-badge">-25%</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80" alt="Nhà Giả Kim">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Văn học</span>
+              <h4 class="book-title"><a href="product-detail.html">Nhà Giả Kim (Kinh Điển)</a></h4>
+              <div class="book-author">Paulo Coelho</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                <span class="rating-count">(980)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">65.000₫</span>
+                <span class="old-price">86.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="book-card" data-id="book-3">
+            <span class="book-badge hot">Hot</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" alt="Tuổi Trẻ Đáng Giá Bao Nhiêu">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Kỹ năng sống</span>
+              <h4 class="book-title"><a href="product-detail.html">Tuổi Trẻ Đáng Giá Bao Nhiêu?</a></h4>
+              <div class="book-author">Rosie Nguyễn</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span class="rating-count">(850)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">85.000₫</span>
+                <span class="old-price">105.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="book-card" data-id="book-4">
+            <span class="book-badge">-30%</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1532012164546-f432f2e3777f?auto=format&fit=crop&w=400&q=80" alt="Cây Cam Ngọt Của Tôi">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Văn học</span>
+              <h4 class="book-title"><a href="product-detail.html">Cây Cam Ngọt Của Tôi</a></h4>
+              <div class="book-author">José Mauro</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span class="rating-count">(1.120)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">92.000₫</span>
+                <span class="old-price">130.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="book-card" data-id="book-5">
+            <span class="book-badge hot">Mới</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=400&q=80" alt="Cha Giàu Cha Nghèo">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Kinh tế</span>
+              <h4 class="book-title"><a href="product-detail.html">Cha Giàu Cha Nghèo</a></h4>
+              <div class="book-author">Robert Kiyosaki</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span class="rating-count">(640)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">115.000₫</span>
+                <span class="old-price">150.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+
+          <div class="book-card" data-id="book-6">
+            <span class="book-badge hot">Mới</span>
+            <a href="product-detail.html" class="book-cover">
+              <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80" alt="Sapiens">
+              <span class="quick-view-btn">Xem chi tiết</span>
+            </a>
+            <div class="book-details">
+              <span class="book-category">Lịch sử</span>
+              <h4 class="book-title"><a href="product-detail.html">Sapiens: Lược Sử Loài Người</a></h4>
+              <div class="book-author">Yuval Noah Harari</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <span class="rating-count">(890)</span>
+              </div>
+              <div class="book-price">
+                <span class="current-price">189.000₫</span>
+                <span class="old-price">235.000₫</span>
+              </div>
+              <button class="btn-add-cart"><i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="logo" style="margin-bottom: 15px;">
+            <a href="index.html">
+              <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+              <div class="logo-text"><h1>BookStore</h1><span>Thế Giới Tri Thức</span></div>
+            </a>
+          </div>
+          <p class="footer-desc">Hệ thống phân phối sách chính hãng toàn quốc, cam kết chất lượng hàng đầu.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Về BookStore</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">Giới thiệu</a></li>
+            <li><a href="shop.html">Danh mục sách</a></li>
+            <li><a href="contact.html">Liên hệ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Hỗ Trợ Khách Hàng</h4>
+          <ul class="footer-links">
+            <li><a href="#policy">Chính sách vận chuyển</a></li>
+            <li><a href="#return">Đổi trả trong 7 ngày</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Tổng Đài CSKH</h4>
+          <p class="footer-desc">Hotline: 1900 6868</p>
+          <p class="footer-desc">Email: hotro@bookstore.vn</p>
+        </div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2024 BookStore - Dự Án Môn Lập Trình Web.</p></div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <div class="modal-header"><h3>Đăng Nhập / Đăng Ký</h3></div>
+      <div class="modal-body">
+        <form onsubmit="event.preventDefault(); alert('Đăng nhập thành công!'); document.getElementById('authModal').classList.remove('active');">
+          <div class="form-group"><label>Email</label><input type="email" class="form-control" required></div>
+          <div class="form-group"><label>Mật khẩu</label><input type="password" class="form-control" required></div>
+          <button type="submit" class="btn-primary" style="width: 100%;">Đăng Nhập</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>
