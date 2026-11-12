@@ -1,0 +1,168 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["windows"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  address   String?
+  avatar    String?
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cart      Cart?
+  orders    Order[]
+  reviews   Review[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  books       Book[]
+
+  @@map("categories")
+}
+
+model Book {
+  id              Int         @id @default(autoincrement())
+  title           String
+  slug            String      @unique
+  author          String
+  description     String?     @db.Text
+  price           Float
+  discountPrice   Float?
+  stock           Int         @default(0)
+  coverImage      String?
+  pages           Int?
+  publisher       String?
+  publicationYear Int?
+  categoryId      Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  category        Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  reviews         Review[]
+
+  @@index([categoryId], map: "books_categoryId_fkey")
+  @@map("books")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  bookId    Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, bookId])
+  @@index([bookId], map: "cart_items_bookId_fkey")
+  @@map("cart_items")
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  orderCode       String        @unique
+  userId          Int
+  recipientName   String
+  recipientPhone  String
+  shippingAddress String
+  paymentMethod   PaymentMethod @default(COD)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  orderStatus     OrderStatus   @default(PENDING)
+  totalPrice      Float
+  note            String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  items           OrderItem[]
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "orders_userId_fkey")
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  bookId    Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  book      Book     @relation(fields: [bookId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([bookId], map: "order_items_bookId_fkey")
+  @@index([orderId], map: "order_items_orderId_fkey")
+  @@map("order_items")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  rating    Int      @default(5)
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bookId], map: "reviews_bookId_fkey")
+  @@index([userId], map: "reviews_userId_fkey")
+  @@map("reviews")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  VNPAY
+  MOMO
+  BANKING
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
