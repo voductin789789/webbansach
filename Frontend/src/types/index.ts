@@ -26,6 +26,7 @@ export interface Book {
   isNew?: boolean;
   isFeatured?: boolean;
   isBestSeller?: boolean;
+  isDemo?: boolean;
   description?: string;
   isbn?: string;
   publisher?: string;

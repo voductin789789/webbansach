@@ -23,10 +23,16 @@ export const BookCard: React.FC<BookCardProps> = ({ book }) => {
 
   return (
     <div className="book-card">
-      <Link to={`/books/${book.id}`} className="book-card-link">
+      <Link
+        to={`/books/${book.id}`}
+        className="book-card-link"
+        aria-disabled={book.isDemo || undefined}
+        tabIndex={book.isDemo ? -1 : undefined}
+        onClick={(event) => { if (book.isDemo) event.preventDefault(); }}
+      >
         {/* Cover Image Wrapper cố định chiều cao 240px */}
         <div className="book-card-image-wrap">
-          <BookCover book={book} />
+          <BookCover book={book} style={{ width: 'min(100%, 180px)' }} />
 
           {/* Discount Badge */}
           {book.discountPercent && book.discountPercent > 0 && (
@@ -116,10 +122,10 @@ export const BookCard: React.FC<BookCardProps> = ({ book }) => {
               size="sm"
               fullWidth
               onClick={handleAddToCart}
-              disabled={book.stock === 0}
+              disabled={book.isDemo || book.stock === 0}
               icon={<ShoppingCart size={15} />}
             >
-              {book.stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
+              {book.isDemo ? 'Chỉ xem mô phỏng' : book.stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
             </Button>
           </div>
         </div>

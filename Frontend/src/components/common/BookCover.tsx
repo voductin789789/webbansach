@@ -60,6 +60,45 @@ const themeByCategoryName: Record<string, string> = {
   'ngoai ngu': 'cat-7',
 };
 
+const coverIllustrations: Record<string, React.ReactNode> = {
+  'cat-1': <g fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="110" cy="72" r="42" opacity=".35" />
+    <path d="M52 119c19-20 35-20 54 0 20-21 39-21 62 0M64 132c16-14 29-14 43 0 16-14 31-14 48 0" />
+    <path d="M110 32v80M95 48l15-16 15 16" opacity=".8" />
+  </g>,
+  'cat-2': <g fill="currentColor">
+    <rect x="57" y="95" width="22" height="43" rx="4" opacity=".42" />
+    <rect x="91" y="73" width="22" height="65" rx="4" opacity=".65" />
+    <rect x="125" y="48" width="22" height="90" rx="4" opacity=".9" />
+    <path d="m55 77 35-19 28 7 39-35 5 5-42 38-29-7-33 18z" />
+  </g>,
+  'cat-3': <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+    <path d="M110 140V76m0 26c-31 0-48-18-48-48 30 0 48 17 48 48zm0-16c0-31 18-48 48-48 0 30-17 48-48 48z" />
+    <path d="M80 139h60" opacity=".6" />
+  </g>,
+  'cat-4': <g fill="currentColor">
+    <circle cx="110" cy="83" r="34" opacity=".45" />
+    <path d="m57 122 9-18 9 18zm91-42 6-12 6 12 13 2-10 9 2 13-11-6-11 6 2-13-10-9zm-92-31 5-10 5 10 11 2-8 7 2 11-10-5-9 5 2-11-8-7z" />
+    <circle cx="111" cy="83" r="15" fill="none" stroke="currentColor" strokeWidth="2" />
+  </g>,
+  'cat-5': <g fill="none" stroke="currentColor" strokeWidth="2">
+    <ellipse cx="110" cy="85" rx="62" ry="25" transform="rotate(-28 110 85)" opacity=".55" />
+    <ellipse cx="110" cy="85" rx="62" ry="25" transform="rotate(28 110 85)" opacity=".8" />
+    <circle cx="110" cy="85" r="11" fill="currentColor" />
+    <circle cx="57" cy="55" r="5" fill="currentColor" />
+    <circle cx="163" cy="115" r="5" fill="currentColor" />
+  </g>,
+  'cat-6': <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round">
+    <path d="M55 137V83a55 55 0 0 1 110 0v54M74 137V86a36 36 0 0 1 72 0v51" opacity=".7" />
+    <path d="M45 137h130M94 108h32v29H94zM110 108V83" />
+  </g>,
+  'cat-7': <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round">
+    <path d="M50 49h80a17 17 0 0 1 17 17v31a17 17 0 0 1-17 17H89l-24 18v-18h-15a17 17 0 0 1-17-17V66a17 17 0 0 1 17-17z" opacity=".8" />
+    <path d="M97 71h73a16 16 0 0 1 16 16v22a16 16 0 0 1-16 16h-9v17l-23-17h-9" opacity=".5" />
+    <circle cx="70" cy="82" r="3" fill="currentColor" /><circle cx="88" cy="82" r="3" fill="currentColor" /><circle cx="106" cy="82" r="3" fill="currentColor" />
+  </g>,
+};
+
 export const BookCover: React.FC<BookCoverProps> = ({
   book,
   className = '',
@@ -84,10 +123,14 @@ export const BookCover: React.FC<BookCoverProps> = ({
     return (
       <div
         className={`book-mockup-cover ${className}`}
+        role="img"
+        aria-label={`${book.title}, bìa minh họa mô phỏng`}
         style={{
           width: '100%',
           height: '100%',
           background: theme.bg,
+          position: 'relative',
+          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -100,31 +143,14 @@ export const BookCover: React.FC<BookCoverProps> = ({
           ...style,
         }}
       >
-        {/* Top category label */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span
-            style={{
-              fontSize: '10px',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              color: theme.accent,
-              backgroundColor: 'rgba(0,0,0,0.35)',
-              padding: '2px 6px',
-              borderRadius: '3px',
-              maxWidth: '80%',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {book.categoryName || 'BOOKSTORE'}
-          </span>
-          <BookOpen size={15} color={theme.accent} />
-        </div>
-
+        <svg aria-hidden="true" viewBox="0 0 220 170" style={{ position: 'absolute', zIndex: 0, top: '19%', left: 0, width: '100%', height: '58%', color: theme.accent, opacity: 0.72 }}>
+          {coverIllustrations[themeId] || coverIllustrations['cat-1']}
+        </svg>
         {/* Center: Book Title & Book Icon */}
-        <div style={{ textAlign: 'center', padding: '6px 0' }}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '6px 0' }}>
+          <span style={{ display: 'inline-block', marginBottom: 5, padding: '2px 6px', border: `1px solid ${theme.accent}88`, borderRadius: 999, color: theme.accent, fontSize: 8, lineHeight: 1.2 }}>
+            Bìa minh họa
+          </span>
           <div
             style={{
               width: '32px',
@@ -171,6 +197,8 @@ export const BookCover: React.FC<BookCoverProps> = ({
         {/* Bottom Author */}
         <div
           style={{
+            position: 'relative',
+            zIndex: 1,
             borderTop: '1px solid rgba(255,255,255,0.18)',
             paddingTop: '6px',
             textAlign: 'center',

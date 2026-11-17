@@ -2,10 +2,10 @@ import React, { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Book, Category } from '../types';
 import { getBooks, getCategories } from '../api/catalog';
-import { getApiErrorMessage } from '../api/response';
 import BookCard from '../components/common/BookCard';
 import { BookCardSkeleton } from '../components/ui/Skeleton';
 import { Button, Input, Spinner } from '../components/ui';
+import { demoBooks, demoCategories } from '../data/demoCatalog';
 
 const BooksPage: React.FC = () => {
   const { slug } = useParams();
@@ -31,14 +31,17 @@ const BooksPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [categoryError, setCategoryError] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     let active = true;
     getCategories()
       .then((result) => { if (active) setCategories(result); })
-      .catch((reason: unknown) => {
-        if (active) setCategoryError(getApiErrorMessage(reason, 'Không tải được danh mục.'));
+      .catch(() => {
+        if (active) {
+          setCategories(demoCategories);
+          setDemoMode(true);
+        }
       });
     return () => { active = false; };
   }, []);
@@ -77,8 +80,18 @@ const BooksPage: React.FC = () => {
         setBooks(result.books);
         setTotalPages(Math.max(result.totalPages, 1));
       })
-      .catch((reason: unknown) => {
-        if (active) setError(getApiErrorMessage(reason, 'Không tải được danh sách sách.'));
+      .catch(() => {
+        if (active) {
+          const query = (searchParams.get('search') || '').trim().toLocaleLowerCase('vi');
+          const fallbackBooks = demoBooks.filter((book) =>
+            (!categoryId || book.categoryId === categoryId) &&
+            (!query || `${book.title} ${book.author} ${book.categoryName}`.toLocaleLowerCase('vi').includes(query))
+          );
+          setBooks(fallbackBooks);
+          setTotalPages(1);
+          setDemoMode(true);
+          setError('');
+        }
       })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -124,6 +137,7 @@ const BooksPage: React.FC = () => {
       <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#2C3E50', marginBottom: '20px' }}>
         {selectedCategory?.name || 'Tất cả sách'}
       </h1>
+      {demoMode && <p role="status" style={{ padding: '12px 16px', background: '#FFF7E6', borderLeft: '4px solid #D97706', color: '#78350F' }}><strong>Chế độ mô phỏng:</strong> một phần sách hoặc danh mục có thể dùng dữ liệu mẫu; xác nhận đơn hàng cần kết nối Backend.</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
         <form onSubmit={submitSearch} style={{ display: 'flex', gap: '8px', gridColumn: 'span 2' }}>
           <Input aria-label="Tìm sách" placeholder="Tên sách, tác giả, ISBN, dịch giả hoặc NXB" value={search} onChange={(event) => setSearch(event.target.value)} style={{ marginBottom: 0 }} />
@@ -151,7 +165,6 @@ const BooksPage: React.FC = () => {
           <option value="">Mọi hình thức bìa</option><option value="PAPERBACK">Bìa mềm</option><option value="HARDCOVER">Bìa cứng</option><option value="DUST_JACKET">Bìa áo</option>
         </select>
       </div>
-      {categoryError && <p role="alert" style={{ color: '#B91C1C' }}>{categoryError}</p>}
       {loading ? (
         <div className="book-grid">{Array.from({ length: 4 }).map((_, index) => <BookCardSkeleton key={index} />)}</div>
       ) : error ? (

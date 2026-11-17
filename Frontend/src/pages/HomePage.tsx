@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Sparkles, Percent, Truck, ShieldCheck, Flame } from 'lucide-react';
 import { Book, Category } from '../types';
 import { getBooks, getCategories } from '../api/catalog';
-import { getApiErrorMessage } from '../api/response';
 import BookCard from '../components/common/BookCard';
 import { BookCardSkeleton } from '../components/ui/Skeleton';
+import { demoBooks, demoCategories } from '../data/demoCatalog';
 
 const HomePage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [books, setBooks] = useState<Book[]>([]);
   const [bestsellers, setBestsellers] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -27,8 +27,13 @@ const HomePage: React.FC = () => {
         setBooks(bookResult.books);
         setBestsellers(bestsellerResult.books);
       })
-      .catch((reason: unknown) => {
-        if (active) setError(getApiErrorMessage(reason, 'Không tải được dữ liệu cửa hàng.'));
+      .catch(() => {
+        if (active) {
+          setCategories(demoCategories);
+          setBooks(demoBooks);
+          setBestsellers(demoBooks.filter((book) => book.isBestSeller).slice(0, 4));
+          setDemoMode(true);
+        }
       })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -47,7 +52,9 @@ const HomePage: React.FC = () => {
               Mở trang sách mới,<br /><span>đón vạn chân trời</span>
             </h1>
             <p className="home-hero-description">
-              Tìm kiếm sách theo tên, tác giả và danh mục. Giá bán và tình trạng hàng được cập nhật từ cửa hàng.
+              {demoMode
+                ? 'Khám phá bìa minh họa và dữ liệu sách mẫu trong bản xem trước.'
+                : 'Tìm kiếm sách theo tên, tác giả và danh mục. Giá bán và tình trạng hàng được cập nhật từ cửa hàng.'}
             </p>
             <Link to="/books" className="home-hero-cta">
               Khám phá sách <ArrowRight size={18} />
@@ -55,17 +62,23 @@ const HomePage: React.FC = () => {
           </div>
           <aside className="home-hero-notes" aria-label="Thông tin mua sách">
             <div className="home-hero-note">
-              <BookOpen size={23} color="#F87171" /><span>Sách và tồn kho được cập nhật từ cửa hàng</span>
+              <BookOpen size={23} color="#F87171" /><span>{demoMode ? 'Bìa, tên và giá sách chỉ dùng để minh họa' : 'Sách và tồn kho được cập nhật từ cửa hàng'}</span>
             </div>
             <div className="home-hero-note">
-              <Truck size={23} color="#F87171" /><span>Thanh toán khi nhận sách (COD)</span>
+              <Truck size={23} color="#F87171" /><span>{demoMode ? 'Bản xem trước không nhận đơn hàng' : 'Thanh toán khi nhận sách (COD)'}</span>
             </div>
             <div className="home-hero-note">
-              <ShieldCheck size={23} color="#F87171" /><span>Theo dõi đơn hàng trong tài khoản</span>
+              <ShieldCheck size={23} color="#F87171" /><span>{demoMode ? 'Cần kết nối Backend để bật mua hàng' : 'Theo dõi đơn hàng trong tài khoản'}</span>
             </div>
           </aside>
         </div>
       </section>
+
+      {demoMode && (
+        <div className="container" role="status" style={{ marginTop: 16, padding: '12px 16px', background: '#FFF7E6', borderLeft: '4px solid #D97706', color: '#78350F' }}>
+          <strong>Chế độ mô phỏng:</strong> sách, bìa và giá là dữ liệu mẫu; giỏ hàng và thanh toán chưa hoạt động.
+        </div>
+      )}
 
       <section className="container home-section">
         <div className="home-section-heading">
@@ -75,8 +88,7 @@ const HomePage: React.FC = () => {
           </div>
           <Link to="/categories" style={{ color: '#E74C3C', fontWeight: 700 }}>Tất cả danh mục →</Link>
         </div>
-        {error && <p role="alert" style={{ color: '#B91C1C' }}>{error}</p>}
-        {!loading && !error && categories.length === 0 && <p style={{ color: '#64748B' }}>Chưa có danh mục sách.</p>}
+        {!loading && categories.length === 0 && <p style={{ color: '#64748B' }}>Chưa có danh mục sách.</p>}
         <div className="category-grid">
           {categories.slice(0, 8).map((category) => (
             <Link key={category.id} to={`/categories/${category.slug}`} className="home-category-link">
@@ -97,7 +109,7 @@ const HomePage: React.FC = () => {
             ? Array.from({ length: 4 }).map((_, index) => <BookCardSkeleton key={index} />)
             : bestsellers.map((book) => <BookCard key={book.id} book={book} />)}
         </div>
-        {!loading && bestsellers.length === 0 && !error && <p style={{ color: '#64748B' }}>Chưa có sách đã giao để xếp hạng bán chạy.</p>}
+        {!loading && bestsellers.length === 0 && <p style={{ color: '#64748B' }}>Chưa có sách đã giao để xếp hạng bán chạy.</p>}
       </section>
 
       <section className="container home-section">
@@ -110,7 +122,7 @@ const HomePage: React.FC = () => {
             ? Array.from({ length: 4 }).map((_, index) => <BookCardSkeleton key={index} />)
             : newBooks.map((book) => <BookCard key={book.id} book={book} />)}
         </div>
-        {!loading && newBooks.length === 0 && !error && <p style={{ color: '#64748B' }}>Chưa có thông tin sách mới.</p>}
+        {!loading && newBooks.length === 0 && <p style={{ color: '#64748B' }}>Chưa có thông tin sách mới.</p>}
       </section>
 
       <section className="container home-section home-section-last">
@@ -121,7 +133,7 @@ const HomePage: React.FC = () => {
         <div className="book-grid">
           {discountBooks.map((book) => <BookCard key={book.id} book={book} />)}
         </div>
-        {!loading && discountBooks.length === 0 && !error && <p style={{ color: '#64748B' }}>Hiện chưa có sách áp dụng giá khuyến mãi.</p>}
+        {!loading && discountBooks.length === 0 && <p style={{ color: '#64748B' }}>Hiện chưa có sách áp dụng giá khuyến mãi.</p>}
       </section>
     </div>
   );

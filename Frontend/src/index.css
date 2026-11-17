@@ -167,7 +167,9 @@ a {
   overflow: hidden;
   background-color: #F1F5F9;
   flex-shrink: 0;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-card-image {

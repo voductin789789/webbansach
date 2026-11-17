@@ -2,20 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Category } from '../types';
 import { getCategories } from '../api/catalog';
-import { getApiErrorMessage } from '../api/response';
 import Spinner from '../components/ui/Spinner';
+import { demoCategories } from '../data/demoCatalog';
 
 const CategoriesPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
 
   useEffect(() => {
     let active = true;
     getCategories()
       .then((result) => { if (active) setCategories(result); })
-      .catch((reason: unknown) => {
-        if (active) setError(getApiErrorMessage(reason, 'Không tải được danh mục sách.'));
+      .catch(() => {
+        if (active) {
+          setCategories(demoCategories);
+          setDemoMode(true);
+        }
       })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -25,9 +28,8 @@ const CategoriesPage: React.FC = () => {
     <div className="container" style={{ padding: '36px 16px' }}>
       <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#2C3E50', marginBottom: '8px' }}>Danh mục sách</h1>
       <p style={{ color: '#64748B', marginBottom: '32px' }}>Khám phá các thể loại sách trong cửa hàng.</p>
-      {loading ? <Spinner size="lg" /> : error ? (
-        <p role="alert" style={{ color: '#B91C1C' }}>{error}</p>
-      ) : categories.length === 0 ? (
+      {demoMode && <p role="status" style={{ padding: '12px 16px', background: '#FFF7E6', borderLeft: '4px solid #D97706', color: '#78350F' }}><strong>Chế độ mô phỏng:</strong> danh mục và số lượng sách chỉ để minh họa.</p>}
+      {loading ? <Spinner size="lg" /> : categories.length === 0 ? (
         <p style={{ color: '#64748B' }}>Chưa có danh mục sách.</p>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
