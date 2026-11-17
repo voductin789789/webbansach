@@ -30,6 +30,24 @@ CREATE DATABASE bookstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 `npm run seed` chỉ dùng cho môi trường local/demo; lệnh này thêm dữ liệu mẫu và không thay thế các bản ghi đã tồn tại.
 
+## Chuẩn bị triển khai Backend trên Railway
+
+1. Tạo project Railway và thêm dịch vụ **MySQL**.
+2. Thêm dịch vụ Node.js từ repository này, đặt **Root Directory** là `/Backend`.
+3. Đặt Build Command là `npm ci --include=dev && npm run prisma:generate && npm run build`, Start Command là `npm start`, và Healthcheck Path là `/api/health`.
+4. Thêm các biến cho dịch vụ Backend:
+   - `NODE_ENV=production`
+   - `DATABASE_URL`: tham chiếu biến `MYSQL_URL` của dịch vụ MySQL trong cùng project.
+   - `JWT_SECRET`: chuỗi ngẫu nhiên riêng dài tối thiểu 32 ký tự; tạo trong Railway, không gửi hoặc commit.
+   - `CLIENT_URL=https://voductin789789.github.io`
+   - `PORT` do Railway tự cấp.
+5. Ở **Pre-deploy Command**, chạy `npm run prisma:push && npm run seed:catalog` để tạo schema và nạp danh mục/sách mẫu. Dùng `seed:catalog` thay cho `seed` trên môi trường công khai để không tạo tài khoản Admin bằng mật khẩu demo. Lệnh pre-deploy chạy mỗi lần deploy; sau lần đầu thành công, xóa lệnh này khỏi Settings. Không chạy `prisma:push` về sau nếu chưa kiểm tra thay đổi schema và có backup.
+6. Sau khi Backend có domain công khai, đặt GitHub Actions variable `VITE_API_URL` bằng `https://<domain-backend>/api`, rồi chạy lại workflow **Deploy frontend to GitHub Pages**.
+
+Seed hiện có giá và tồn kho mẫu, nhưng chưa có ảnh bìa thật: đa số `coverImage` rỗng và một vài đường dẫn `/uploads/...` không có file trong repository. Giao diện sẽ dùng bìa minh họa thay thế cho tới khi cập nhật ảnh hợp lệ. Không dùng các dữ liệu giá mẫu để bán hàng thật.
+
+Để tạo Admin production, hãy đăng ký tài khoản của bạn trên website rồi đổi vai trò đúng email trong Railway MySQL query editor; không dùng tài khoản/mật khẩu demo từ `users.json`.
+
 ## API chính
 
 - `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `PUT /auth/profile`

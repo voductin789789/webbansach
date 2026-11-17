@@ -10,7 +10,8 @@
     "test": "tsx --test test/order-policy.test.ts test/order.service.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "seed": "tsx src/data/seed.ts"
+    "seed": "tsx src/data/seed.ts",
+    "seed:catalog": "tsx src/data/seed.ts --catalog-only"
   },
   "keywords": [],
   "author": "",

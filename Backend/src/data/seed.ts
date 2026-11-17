@@ -190,12 +190,17 @@ async function seedCarts(): Promise<void> {
 // ============================================================
 
 async function main(): Promise<void> {
+    const catalogOnly = process.argv.includes('--catalog-only');
     console.log('Bắt đầu seed dữ liệu Website Bán Sách...');
 
-    await seedUsers();
+    if (!catalogOnly) {
+        await seedUsers();
+    }
     await seedCategories();
     await seedBooks();
-    await seedCarts();
+    if (!catalogOnly) {
+        await seedCarts();
+    }
 
     console.log('Seed dữ liệu hoàn tất!');
 }
