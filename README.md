@@ -51,6 +51,12 @@ Thay URL `origin` bằng địa chỉ repository của bạn. Trước khi commi
 
 Không xóa `Frontend/src` hoặc `Backend/src` để giảm số lượng tệp: đây là mã nguồn ứng dụng. Tải mã nguồn lên GitHub cũng chưa tự triển khai website; cần cấu hình dịch vụ Frontend/Backend và biến môi trường theo nền tảng hosting.
 
+## Triển khai giao diện lên GitHub Pages
+
+Workflow `.github/workflows/deploy-pages.yml` tự build Frontend và publish khi có push lên nhánh `main`. Trong GitHub, đặt **Settings → Pages → Build and deployment → Source** thành **GitHub Actions**. Sau khi workflow hoàn tất, giao diện sẽ có tại `https://voductin789789.github.io/webbansach/`.
+
+GitHub Pages chỉ host giao diện tĩnh; Backend Express và MySQL không chạy trên Pages. Các chức năng cần API sẽ hoạt động online sau khi Backend và database được host riêng, rồi đặt biến Actions `VITE_API_URL` thành URL API công khai (ví dụ `https://api.example.com/api`) trong **Settings → Secrets and variables → Actions → Variables**. Không đặt URL local hoặc thông tin bí mật vào biến frontend.
+
 ## Hợp đồng tích hợp hiện tại
 
 - Đăng ký/đăng nhập/hồ sơ: `/api/auth/register`, `/api/auth/login`, `/api/auth/me`, `/api/auth/profile`.
