@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Sách (AdminBooks) - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- ADMIN TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-lock"></i> Khu Vực Quản Trị Hệ Thống (Admin Panel)</span>
+        <span><i class="fa-solid fa-user-shield"></i> Xin chào, <strong class="admin-user-name">Quản Trị Viên</strong></span>
+      </div>
+      <div class="top-bar-right">
+        <a href="index.html"><i class="fa-solid fa-store"></i> Xem Cửa Hàng</a>
+        <a href="#logout" class="logout-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> Đăng xuất</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- ADMIN SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="admin-logo">
+        <div class="admin-logo-icon">
+          <i class="fa-solid fa-book-open-reader"></i>
+        </div>
+        <div class="admin-logo-text">
+          <h3>BookStore</h3>
+          <span>Admin Dashboard</span>
+        </div>
+      </div>
+
+      <div class="admin-nav-label">Quản lý chung</div>
+      <ul class="admin-nav-list">
+        <li>
+          <a href="account.html">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Tổng quan (Dashboard)</span>
+          </a>
+        </li>
+        <li>
+          <a href="admin-books.html" class="active">
+            <i class="fa-solid fa-book"></i>
+            <span>Quản lý Sách</span>
+            <span class="nav-badge">FE3</span>
+          </a>
+        </li>
+        <li>
+          <a href="shop.html">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Quản lý Danh Mục</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="admin-nav-label">Kinh doanh &amp; Đơn hàng</div>
+      <ul class="admin-nav-list">
+        <li>
+          <a href="account.html#orders">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Quản lý Đơn Hàng</span>
+          </a>
+        </li>
+        <li>
+          <a href="account.html#profile">
+            <i class="fa-solid fa-users"></i>
+            <span>Quản lý Tài Khoản</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="admin-nav-label">Hệ thống</div>
+      <ul class="admin-nav-list">
+        <li>
+          <a href="index.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Về trang chủ</span>
+          </a>
+        </li>
+        <li>
+          <a href="#logout" class="logout-link">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Đăng xuất</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- ADMIN MAIN CONTENT -->
+    <main class="admin-content">
+      <div class="admin-page-header">
+        <div>
+          <h2 class="admin-page-title">
+            <i class="fa-solid fa-book-open"></i> Quản Lý Kho Sách (AdminBooks)
+          </h2>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+            Thêm mới, cập nhật giá, tồn kho và danh mục sách trong hệ thống BookStore
+          </p>
+        </div>
+        <button type="button" class="btn-add-new">
+          <i class="fa-solid fa-circle-plus"></i> Thêm Sách Mới
+        </button>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="admin-stats">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fa-solid fa-book"></i>
+          </div>
+          <div class="stat-info">
+            <h4 class="stat-value">0</h4>
+            <span>Tổng số sách</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fa-solid fa-tags"></i>
+          </div>
+          <div class="stat-info">
+            <h4 class="stat-value">0</h4>
+            <span>Thể loại danh mục</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fa-solid fa-boxes-packing"></i>
+          </div>
+          <div class="stat-info">
+            <h4 class="stat-value">0</h4>
+            <span>Đầu sách còn hàng</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="stat-info">
+            <h4 class="stat-value">0</h4>
+            <span>Hết hàng trong kho</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR: SEARCH & FILTER -->
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="adminSearchInput" placeholder="Tìm theo tên sách, tác giả...">
+        </div>
+
+        <div class="admin-filter-group">
+          <select id="filterCategory" class="admin-filter-select">
+            <option value="all">Tất cả danh mục</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div class="admin-table-card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">STT</th>
+              <th>Thông Tin Sách</th>
+              <th>Danh Mục</th>
+              <th>Giá Bán</th>
+              <th>Tồn Kho</th>
+              <th>Năm XB</th>
+              <th style="width: 100px; text-align: center;">Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="booksTableBody">
+            <!-- Dynamic rows by admin-books.js -->
+          </tbody>
+        </table>
+
+        <!-- PAGINATION -->
+        <div class="admin-pagination">
+          <div class="page-info">Đang tải dữ liệu...</div>
+          <div class="page-btns"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL THÊM / SỬA SÁCH -->
+  <div class="admin-modal-overlay" id="bookFormOverlay">
+    <div class="admin-modal">
+      <div class="admin-modal-title">
+        <span><i class="fa-solid fa-plus"></i> Thêm Sách Mới</span>
+        <button type="button" class="modal-close">&times;</button>
+      </div>
+
+      <form id="bookForm" novalidate>
+        <div class="admin-form-grid">
+          <div class="form-group full">
+            <label for="bookTitle">Tên Sách *</label>
+            <input type="text" id="bookTitle" class="form-control" placeholder="Ví dụ: Đắc Nhân Tâm" required>
+          </div>
+
+          <div class="form-group">
+            <label for="bookAuthor">Tác Giả *</label>
+            <input type="text" id="bookAuthor" class="form-control" placeholder="Ví dụ: Dale Carnegie" required>
+          </div>
+
+          <div class="form-group">
+            <label for="bookCategory">Danh Mục *</label>
+            <input type="text" id="bookCategory" class="form-control" placeholder="Ví dụ: Kỹ năng sống, Văn học..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="bookPrice">Giá Bán (VNĐ) *</label>
+            <input type="number" id="bookPrice" class="form-control" placeholder="Ví dụ: 79000" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="bookOldPrice">Giá Gốc / Giá Bìa (VNĐ)</label>
+            <input type="number" id="bookOldPrice" class="form-control" placeholder="Ví dụ: 110000" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="bookStock">Số Lượng Tồn Kho *</label>
+            <input type="number" id="bookStock" class="form-control" placeholder="Ví dụ: 100" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="bookPublisher">Nhà Xuất Bản</label>
+            <input type="text" id="bookPublisher" class="form-control" placeholder="Ví dụ: NXB Tổng Hợp TP.HCM">
+          </div>
+
+          <div class="form-group">
+            <label for="bookYear">Năm Xuất Bản</label>
+            <input type="number" id="bookYear" class="form-control" placeholder="Ví dụ: 2024" min="1900" max="2099">
+          </div>
+
+          <div class="form-group">
+            <label for="bookPages">Số Trang</label>
+            <input type="number" id="bookPages" class="form-control" placeholder="Ví dụ: 320" min="1">
+          </div>
+
+          <div class="form-group full">
+            <label for="bookImageUrl">URL Hình Ảnh Bìa Sách</label>
+            <input type="url" id="bookImageUrl" class="form-control" placeholder="https://images.unsplash.com/...">
+            <img src="" id="imagePreview" class="image-preview" alt="Xem trước bìa">
+          </div>
+
+          <div class="form-group full">
+            <label for="bookDescription">Mô Tả Tóm Tắt Cuốn Sách</label>
+            <textarea id="bookDescription" class="form-control" rows="3" placeholder="Giới thiệu nội dung, thông điệp nổi bật..."></textarea>
+          </div>
+        </div>
+
+        <div class="admin-form-actions">
+          <button type="button" class="btn-admin-cancel">Hủy Bỏ</button>
+          <button type="submit" class="btn-admin-save">
+            <i class="fa-solid fa-floppy-disk"></i> Lưu Sách
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL XÁC NHẬN XÓA SÁCH -->
+  <div class="admin-modal-overlay" id="deleteConfirmOverlay">
+    <div class="admin-modal" style="max-width: 440px;">
+      <div class="confirm-delete-box">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <h4>Xác Nhận Xóa Sách?</h4>
+        <p>Bạn có chắc chắn muốn xóa cuốn sách <strong id="deleteBookName" style="color: var(--primary-color);">...</strong> khỏi hệ thống? Thao tác này không thể hoàn tác.</p>
+        <div class="confirm-delete-actions">
+          <button type="button" class="btn-admin-cancel">Hủy Bỏ</button>
+          <button type="button" class="btn-admin-save btn-confirm-delete" style="background: #E74C3C;">
+            <i class="fa-solid fa-trash"></i> Đồng Ý Xóa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin-books.js"></script>
+</body>
+</html>
