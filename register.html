@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Ký Tài Khoản - BookStore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fa-solid fa-phone"></i> Hotline: 1900 6868</span>
+        <span><i class="fa-solid fa-envelope"></i> hotro@bookstore.vn</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="shop.html"><i class="fa-solid fa-book-open"></i> Tiếp tục mua sắm</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <header class="main-header">
+    <div class="container">
+      <div class="header-inner">
+        <div class="logo">
+          <a href="index.html">
+            <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+            <div class="logo-text"><h1>BookStore</h1><span>Thế Giới Tri Thức</span></div>
+          </a>
+        </div>
+
+        <div class="header-search">
+          <form class="search-form" action="shop.html" method="GET" onsubmit="return false;">
+            <input type="text" class="search-input" placeholder="Tìm tên sách, tác giả..." autocomplete="off">
+            <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </form>
+          <div class="search-suggest-box"></div>
+        </div>
+
+        <div class="header-actions">
+          <a href="login.html" class="action-item active" title="Tài khoản">
+            <div class="action-icon"><i class="fa-regular fa-user"></i></div>
+            <div class="action-text"><span>Xin chào!</span><span>Tài khoản</span></div>
+          </a>
+          <a href="cart.html" class="action-item" title="Xem giỏ hàng">
+            <div class="action-icon">
+              <i class="fa-solid fa-bag-shopping"></i>
+              <span class="badge-count">0</span>
+            </div>
+            <div class="action-text"><span>Giỏ hàng</span><span>Mua sắm</span></div>
+          </a>
+          <button class="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <ul class="nav-menu">
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="shop.html">Danh mục sách</a></li>
+          <li><a href="shop.html?filter=new">Sách mới</a></li>
+          <li><a href="shop.html?filter=sale">Khuyến mãi</a></li>
+          <li><a href="about.html">Giới thiệu</a></li>
+          <li><a href="contact.html">Liên hệ</a></li>
+        </ul>
+        <div class="nav-hotline"><i class="fa-solid fa-phone"></i> Hotline: <span>1900 6868</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-wrap">
+    <div class="container">
+      <div class="breadcrumb-list">
+        <a href="index.html">Trang chủ</a>
+        <span class="separator">/</span>
+        <span class="current">Đăng Ký Tài Khoản</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH SECTION -->
+  <section class="auth-section">
+    <div class="auth-container">
+      <!-- CỘT TRÁI: BANNER THƯƠNG HIỆU -->
+      <div class="auth-banner">
+        <div class="auth-banner-icon">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h2>Gia Nhập BookStore!</h2>
+        <p>Mở tài khoản chỉ với 30 giây để tận hưởng thế giới sách chính hãng cùng voucher giảm giá 10% cho đơn hàng đầu tiên.</p>
+        <ul class="auth-banner-features">
+          <li><i class="fa-solid fa-tag"></i> Nhận ngay voucher giảm giá thành viên mới</li>
+          <li><i class="fa-solid fa-heart"></i> Lưu sách yêu thích &amp; nhận thông báo giảm giá</li>
+          <li><i class="fa-solid fa-clock-rotate-left"></i> Xem lại toàn bộ lịch sử mua sắm</li>
+        </ul>
+      </div>
+
+      <!-- CỘT PHẢI: FORM ĐĂNG KÝ -->
+      <div class="auth-form-box">
+        <div class="auth-tabs">
+          <a href="login.html" class="auth-tab-btn" style="text-align: center; text-decoration: none;">Đăng Nhập</a>
+          <button type="button" class="auth-tab-btn active">Đăng Ký</button>
+        </div>
+
+        <h3 class="auth-form-title">Tạo Tài Khoản Mới</h3>
+        <p class="auth-form-subtitle">Vui lòng điền thông tin để đăng ký thành viên</p>
+
+        <!-- Khối hiển thị thông báo alert -->
+        <div class="auth-alert"></div>
+
+        <form class="auth-form" id="registerForm" novalidate>
+          <div class="form-group">
+            <label for="regFullName">Họ và tên *</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-user"></i>
+              <input type="text" id="regFullName" class="form-control" placeholder="Nguyễn Văn A" required>
+            </div>
+            <div class="form-error-text"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="regEmail">Địa chỉ Email *</label>
+            <div class="input-icon-wrap">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="email" id="regEmail" class="form-control" placeholder="user@gmail.com" required>
+            </div>
+            <div class="form-error-text"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="regPhone">Số điện thoại liên hệ</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-phone"></i>
+              <input type="tel" id="regPhone" class="form-control" placeholder="0901234567">
+            </div>
+            <div class="form-error-text"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword">Mật khẩu *</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="regPassword" class="form-control" placeholder="Tối thiểu 6 ký tự" required>
+              <button type="button" class="toggle-password" aria-label="Hiện mật khẩu">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar"></div>
+            </div>
+            <div class="form-error-text"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="regConfirmPassword">Xác nhận lại mật khẩu *</label>
+            <div class="input-icon-wrap">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="regConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" required>
+            </div>
+            <div class="form-error-text"></div>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="font-size: 13px; display: flex; align-items: flex-start; gap: 8px; color: var(--text-muted); cursor: pointer;">
+              <input type="checkbox" checked required style="accent-color: var(--accent-color); margin-top: 3px;">
+              <span>Tôi đồng ý với <a href="about.html" style="color: var(--accent-color); font-weight: 600;">Điều khoản dịch vụ</a> và <a href="about.html" style="color: var(--accent-color); font-weight: 600;">Chính sách bảo mật</a> của BookStore.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-auth">
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
+          </button>
+
+          <div class="auth-divider">
+            <span>Hoặc</span>
+          </div>
+
+          <div class="auth-switch">
+            Đã có tài khoản? <a href="login.html">Đăng nhập tại đây</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2024 BookStore - Dự Án Môn Lập Trình Web.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container"></div>
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
