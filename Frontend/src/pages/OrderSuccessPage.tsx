@@ -6,11 +6,13 @@ import { getOrder, simulatePayment } from '../api/orders';
 import { Order } from '../types';
 import { toast } from '../components/ui/Toast';
 import { getApiErrorMessage } from '../api/response';
+import { createPaymentSession } from '../api/payments';
 
 const OrderSuccessPage: React.FC = () => {
   const { id } = useParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [paying, setPaying] = useState(false);
+  const [openingPayment, setOpeningPayment] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -32,22 +34,40 @@ const OrderSuccessPage: React.FC = () => {
     } finally { setPaying(false); }
   };
 
+  const handleProviderPayment = async () => {
+    if (!id) return;
+    setOpeningPayment(true);
+    try {
+      const session = await createPaymentSession(id);
+      window.location.assign(session.paymentUrl);
+    } catch (reason) {
+      toast.error(getApiErrorMessage(reason, 'Không thể mở cổng thanh toán. Đơn hàng vẫn được lưu để bạn thử lại.'));
+      setOpeningPayment(false);
+    }
+  };
+
+  const needsPayment = order && order.paymentMethod !== 'COD' && order.paymentStatus !== 'PAID';
+  const supportedGateway = order?.paymentMethod === 'VNPAY' || order?.paymentMethod === 'MOMO';
+
   return (
     <div className="container" style={{ minHeight: '55vh', padding: '56px 16px', display: 'grid', placeItems: 'center', textAlign: 'center' }}>
       <div>
         <CheckCircle2 size={56} color="#10B981" />
-        <h1 style={{ color: '#2C3E50' }}>Đặt hàng thành công</h1>
+        <h1 style={{ color: '#2C3E50' }}>{needsPayment ? 'Đơn hàng đã được tạo' : 'Đặt hàng thành công'}</h1>
         <p style={{ color: '#64748B' }}>Mã đơn hàng: <strong>{order?.orderCode || id}</strong>.</p>
         {order?.paymentMethod === 'COD' && <p style={{ color: '#64748B' }}>Bạn thanh toán khi nhận hàng (COD).</p>}
         {order && order.paymentMethod !== 'COD' && (
           <div style={{ margin: '14px auto', maxWidth: 520, padding: 14, background: '#FFFBEB', color: '#92400E', borderRadius: 8 }}>
-            <p style={{ marginTop: 0 }}>Phương thức thử nghiệm: {order.paymentMethod}. Không kết nối ngân hàng và không thu tiền thật.</p>
+            <p style={{ marginTop: 0 }}>Phương thức: {order.paymentMethod}. Trạng thái: {order.paymentStatus === 'PAID' ? 'Đã thanh toán' : order.paymentStatus === 'FAILED' ? 'Thanh toán chưa thành công' : 'Chưa thanh toán'}.</p>
             {order.paymentStatus === 'PAID'
-              ? <strong>Đã thanh toán mô phỏng.</strong>
-              : <Button onClick={() => void handleSandboxPayment()} loading={paying}>Mô phỏng thanh toán thành công</Button>}
+              ? <strong>Đã nhận xác nhận thanh toán từ Backend.</strong>
+              : supportedGateway
+                ? <Button onClick={() => void handleProviderPayment()} loading={openingPayment}>Tiếp tục thanh toán</Button>
+                : <p>Phương thức thanh toán này chưa được kết nối. Vui lòng liên hệ cửa hàng để được hỗ trợ.</p>}
+            {import.meta.env.DEV && needsPayment && <div style={{ marginTop: 12 }}><Button variant="outline" onClick={() => void handleSandboxPayment()} loading={paying}>Mô phỏng kết quả (chỉ môi trường phát triển)</Button></div>}
           </div>
         )}
-        <p style={{ color: '#64748B', fontSize: 13 }}>Email xác nhận được đưa vào hộp thư sandbox nội bộ; hệ thống local chưa gửi email ra ngoài.</p>
+        <p style={{ color: '#64748B', fontSize: 13 }}>Email xác nhận hiện được lưu trong hàng đợi nội bộ; hệ thống chưa gửi email ra ngoài.</p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <Link to={`/orders/${id}`}><Button variant="primary">Xem đơn hàng</Button></Link>
           <Link to="/books"><Button variant="outline">Tiếp tục mua sách</Button></Link>

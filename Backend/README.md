@@ -43,6 +43,7 @@ CREATE DATABASE bookstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    - `PORT` do Railway tự cấp.
 5. Ở **Pre-deploy Command**, chạy `npm run prisma:push && npm run seed:catalog` để tạo schema và nạp danh mục/sách mẫu. Dùng `seed:catalog` thay cho `seed` trên môi trường công khai để không tạo tài khoản Admin bằng mật khẩu demo. Lệnh pre-deploy chạy mỗi lần deploy; sau lần đầu thành công, xóa lệnh này khỏi Settings. Không chạy `prisma:push` về sau nếu chưa kiểm tra thay đổi schema và có backup.
 6. Sau khi Backend có domain công khai, đặt GitHub Actions variable `VITE_API_URL` bằng `https://<domain-backend>/api`, rồi chạy lại workflow **Deploy frontend to GitHub Pages**.
+7. Để bật cổng thanh toán sandbox, cấu hình các biến `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`, `VNPAY_RETURN_URL`, `MOMO_PARTNER_CODE`, `MOMO_ACCESS_KEY`, `MOMO_SECRET_KEY`, `MOMO_RETURN_URL` và `MOMO_NOTIFY_URL` trong Railway. Đặt `PAYMENT_RESULT_URL` tới route `/order-success` của GitHub Pages; đăng ký IPN URL VNPay `https://<domain-backend>/api/payments/vnpay/ipn` trong tài khoản merchant. Không đưa khóa vào repository hoặc gửi qua chat. VNPay/MoMo chỉ dùng sandbox tới khi merchant được cấp thông tin production.
 
 Seed hiện có giá và tồn kho mẫu, nhưng chưa có ảnh bìa thật: đa số `coverImage` rỗng và một vài đường dẫn `/uploads/...` không có file trong repository. Giao diện sẽ dùng bìa minh họa thay thế cho tới khi cập nhật ảnh hợp lệ. Không dùng các dữ liệu giá mẫu để bán hàng thật.
 
@@ -53,9 +54,10 @@ Seed hiện có giá và tồn kho mẫu, nhưng chưa có ảnh bìa thật: đ
 - `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `PUT /auth/profile`
 - `GET /books`, `GET /books/:id`, `GET /books/slug/:slug`; tạo/sửa/xóa sách cần quyền Admin
 - `GET /categories`; tạo/sửa/xóa danh mục cần quyền Admin. Không thể xóa danh mục còn sách.
-- `POST /orders` tạo đơn COD; `GET /orders/my-orders`, `GET /orders/:id`
+- `POST /orders` tạo đơn; `GET /orders/my-orders`, `GET /orders/:id`. Đơn online chỉ được đánh dấu đã thanh toán khi callback VNPay/MoMo có chữ ký hợp lệ và khớp mã đơn/số tiền.
 - `PATCH /orders/:id/cancel` hủy đơn của khách khi `PENDING`; Admin có thể hủy khi `PENDING` hoặc `PROCESSING`. Hủy và hoàn tồn kho dùng chung transaction, không thể hoàn kho hai lần.
 - `GET /orders` và `PATCH /orders/:id/status` dành cho Admin. Trạng thái chỉ chuyển lần lượt `PENDING → PROCESSING → SHIPPED → DELIVERED`; không thể dùng endpoint này để hủy.
+- `POST /payments/orders/:id/session` tạo URL thanh toán VNPay/MoMo sau khi kiểm tra chủ đơn; các callback `/payments/vnpay/{return,ipn}` và `/payments/momo/{return,ipn}` xác thực chữ ký và đối chiếu mã đơn/số tiền trước khi cập nhật trạng thái.
 
 Phản hồi thành công theo dạng `{ success, message, data, pagination? }`; lỗi nghiệp vụ trả mã HTTP cụ thể, gồm `400`, `401`, `403`, `404` và `409`.
 

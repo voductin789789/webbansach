@@ -48,6 +48,18 @@ const categoryThemes: Record<string, { bg: string; accent: string }> = {
   },
 };
 
+const themeByCategoryName: Record<string, string> = {
+  'van hoc': 'cat-1',
+  'kinh te': 'cat-2',
+  'ky nang song': 'cat-3',
+  'tam ly': 'cat-3',
+  'thieu nhi': 'cat-4',
+  'khoa hoc': 'cat-5',
+  'cong nghe': 'cat-5',
+  'lich su': 'cat-6',
+  'ngoai ngu': 'cat-7',
+};
+
 export const BookCover: React.FC<BookCoverProps> = ({
   book,
   className = '',
@@ -56,13 +68,19 @@ export const BookCover: React.FC<BookCoverProps> = ({
   const [imgError, setImgError] = useState(false);
 
   const catId = book.categoryId || 'cat-1';
-  const theme = categoryThemes[catId] || {
+  const normalizedCategoryName = (book.categoryName || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  const themeId = categoryThemes[catId] ? catId : themeByCategoryName[normalizedCategoryName];
+  const theme = categoryThemes[themeId] || {
     bg: 'linear-gradient(135deg, #2C3E50 0%, #1A252F 100%)',
     accent: '#E74C3C',
   };
+  const isMissingPlaceholder = /\/uploads\/placeholder\d*\.jpe?g(?:[?#]|$)/i.test(book.coverImage || '');
 
   // Nếu ảnh online bị lỗi -> Render bìa sách vector đồ họa đẹp chuẩn kích thước
-  if (imgError || !book.coverImage) {
+  if (imgError || !book.coverImage || isMissingPlaceholder) {
     return (
       <div
         className={`book-mockup-cover ${className}`}

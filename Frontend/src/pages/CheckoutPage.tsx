@@ -171,13 +171,11 @@ const CheckoutPage: React.FC = () => {
           Phương thức thanh toán
           <select value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)} style={{ display: 'block', width: '100%', padding: 10, marginTop: 6, border: '1px solid #CBD5E1', borderRadius: 6 }}>
             <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-            <option value="BANKING">Chuyển khoản thử nghiệm (sandbox)</option>
-            <option value="VNPAY">VNPay thử nghiệm (sandbox)</option>
-            <option value="MOMO">MoMo thử nghiệm (sandbox)</option>
-            <option value="CARD">Thẻ thử nghiệm (sandbox)</option>
+            <option value="VNPAY">VNPay sandbox (QR, thẻ nội địa/quốc tế)</option>
+            <option value="MOMO">Ví MoMo sandbox</option>
           </select>
         </label>
-        {paymentMethod !== 'COD' && <p style={{ color: '#92400E', background: '#FFFBEB', padding: 10, borderRadius: 6 }}>Chế độ sandbox chỉ mô phỏng kết quả thanh toán; không kết nối ngân hàng và không thu tiền thật.</p>}
+        {paymentMethod !== 'COD' && <p style={{ color: '#92400E', background: '#FFFBEB', padding: 10, borderRadius: 6 }}>Bạn sẽ được chuyển tới cổng thanh toán sandbox. Đơn chỉ được xác nhận đã thanh toán sau khi Backend kiểm tra callback có chữ ký hợp lệ.</p>}
         <div style={{ margin: '20px 0', padding: '16px', background: '#F8FAFC', borderRadius: '6px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
             <span>Tạm tính ({items.length} sản phẩm)</span><span>{formatVND(quote?.subtotalPrice ?? totalPrice)}</span>
@@ -188,7 +186,7 @@ const CheckoutPage: React.FC = () => {
           <p style={{ margin: '10px 0 0', color: '#64748B', fontSize: '13px' }}>Phí ship demo tính theo tỉnh/thành và khối lượng; Backend xác nhận lại tồn kho và tổng tiền khi đặt.</p>
         </div>
         <Button type="submit" fullWidth size="lg" loading={submitting} disabled={quoteLoading || !quote || Boolean(quoteError)}>
-          {paymentMethod === 'COD' ? 'Đặt hàng và thanh toán khi nhận hàng' : 'Tạo đơn và mở thanh toán thử'}
+          {paymentMethod === 'COD' ? 'Đặt hàng và thanh toán khi nhận hàng' : 'Tạo đơn hàng'}
         </Button>
       </form>
     </div>

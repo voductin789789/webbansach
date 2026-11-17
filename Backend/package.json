@@ -7,7 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "tsx --test test/order-policy.test.ts test/order.service.test.ts",
+    "test": "tsx --test test/order-policy.test.ts test/order.service.test.ts test/payment-signatures.test.ts test/payments.service.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "seed": "tsx src/data/seed.ts",

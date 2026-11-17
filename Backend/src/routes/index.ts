@@ -6,6 +6,7 @@ import orderRoutes from './order.routes';
 import customerFeaturesRoutes from './customer-features.routes';
 import adminFeaturesRoutes from './admin-features.routes';
 import contentRoutes from './content.routes';
+import paymentsRoutes from './payments.routes';
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router.use('/auth', authRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/books', bookRoutes);
 router.use('/orders', orderRoutes);
+router.use('/payments', paymentsRoutes);
 router.use('/storefront', customerFeaturesRoutes);
 router.use('/admin', adminFeaturesRoutes);
 router.use('/', contentRoutes);
