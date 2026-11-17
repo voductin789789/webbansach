@@ -1,0 +1,48 @@
+
+[
+  {
+    "name": "Văn học",
+    "slug": "van-hoc",
+    "description": "Tiểu thuyết, truyện ngắn và văn học Việt Nam, thế giới"
+  },
+  {
+    "name": "Kỹ năng sống",
+    "slug": "ky-nang-song",
+    "description": "Phát triển bản thân, giao tiếp và kỹ năng học tập"
+  },
+  {
+    "name": "Kinh tế",
+    "slug": "kinh-te",
+    "description": "Kinh doanh, quản trị, tài chính và đầu tư"
+  },
+  {
+    "name": "Thiếu nhi",
+    "slug": "thieu-nhi",
+    "description": "Truyện thiếu nhi và sách giáo dục trẻ em"
+  },
+  {
+    "name": "Khoa học",
+    "slug": "khoa-hoc",
+    "description": "Khoa học tự nhiên, vũ trụ và khám phá"
+  },
+  {
+    "name": "Lịch sử",
+    "slug": "lich-su",
+    "description": "Lịch sử Việt Nam và thế giới"
+  },
+  {
+    "name": "Tâm lý",
+    "slug": "tam-ly",
+    "description": "Tâm lý học và hành vi con người"
+  },
+  {
+    "name": "Công nghệ",
+    "slug": "cong-nghe",
+    "description": "Lập trình, phần mềm và công nghệ thông tin"
+  },
+  {
+    "name": "Ngoại ngữ",
+    "slug": "ngoai-ngu",
+    "description": "Tiếng Anh, tiếng Nhật và các ngoại ngữ khác"
+  }
+]

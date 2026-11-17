@@ -1,0 +1,23 @@
+# Dependencies
+**/node_modules/
+
+# Build output and test artifacts
+**/dist/
+**/coverage/
+**/.vite/
+
+# Local configuration and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local uploads and logs
+**/upload/
+**/uploads/
+**/*.log
+
+# Agent/editor files are not part of the application
+.agents/
+.vscode/
+.DS_Store
+Thumbs.db

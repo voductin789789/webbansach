@@ -1,0 +1,355 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["windows"]
+}
+
+model InventoryAllocation {
+  id          Int            @id @default(autoincrement())
+  batchId     Int
+  orderItemId Int
+  quantity    Int
+  createdAt   DateTime       @default(now())
+  batch       InventoryBatch @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  orderItem   OrderItem      @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@unique([batchId, orderItemId])
+  @@index([orderItemId])
+  @@map("inventory_allocations")
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  password      String
+  name          String
+  phone         String?
+  address       String?
+  avatar        String?
+  role          Role            @default(CUSTOMER)
+  loyaltyPoints Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  cart          Cart?
+  orders        Order[]
+  reviews       Review[]
+  wishlist      WishlistItem[]
+  addresses     Address[]
+  helpfulVotes  ReviewHelpful[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  books       Book[]
+
+  @@map("categories")
+}
+
+model Book {
+  id               Int              @id @default(autoincrement())
+  title            String
+  slug             String           @unique
+  isbn             String?          @unique
+  author           String
+  translator       String?
+  description      String?          @db.Text
+  quote            String?          @db.Text
+  price            Float
+  discountPrice    Float?
+  stock            Int              @default(0)
+  coverImage       String?
+  backImage        String?
+  samplePdfUrl     String?
+  pages            Int?
+  publisher        String?
+  publicationYear  Int?
+  binding          BookBinding?
+  weightGrams      Int?
+  widthMm          Int?
+  heightMm         Int?
+  lengthMm         Int?
+  categoryId       Int
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  category         Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  cartItems        CartItem[]
+  orderItems       OrderItem[]
+  reviews          Review[]
+  wishlistItems    WishlistItem[]
+  inventoryBatches InventoryBatch[]
+
+  @@index([categoryId], map: "books_categoryId_fkey")
+  @@map("books")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cartId    Int
+  bookId    Int
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, bookId])
+  @@index([bookId], map: "cart_items_bookId_fkey")
+  @@map("cart_items")
+}
+
+model Order {
+  id                  Int           @id @default(autoincrement())
+  orderCode           String        @unique
+  userId              Int
+  recipientName       String
+  recipientPhone      String
+  shippingAddress     String
+  paymentMethod       PaymentMethod @default(COD)
+  paymentStatus       PaymentStatus @default(UNPAID)
+  orderStatus         OrderStatus   @default(PENDING)
+  subtotalPrice       Float         @default(0)
+  shippingFee         Float         @default(0)
+  discountAmount      Float         @default(0)
+  totalPrice          Float
+  shippingWeightGrams Int           @default(0)
+  shippingProvider    String?
+  trackingCode        String?
+  paymentReference    String?
+  couponId            Int?
+  pointsAwarded       Int           @default(0)
+  note                String?       @db.Text
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  items               OrderItem[]
+  user                User          @relation(fields: [userId], references: [id])
+  coupon              Coupon?       @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  @@index([userId], map: "orders_userId_fkey")
+  @@index([createdAt])
+  @@index([orderStatus, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int                   @id @default(autoincrement())
+  orderId     Int
+  bookId      Int
+  quantity    Int
+  price       Float
+  createdAt   DateTime              @default(now())
+  book        Book                  @relation(fields: [bookId], references: [id])
+  order       Order                 @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  allocations InventoryAllocation[]
+
+  @@index([bookId], map: "order_items_bookId_fkey")
+  @@index([orderId], map: "order_items_orderId_fkey")
+  @@map("order_items")
+}
+
+model Review {
+  id               Int             @id @default(autoincrement())
+  userId           Int
+  bookId           Int
+  rating           Int             @default(5)
+  comment          String?         @db.Text
+  imageUrls        Json?
+  verifiedPurchase Boolean         @default(false)
+  helpfulCount     Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  book             Book            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  helpfulVotes     ReviewHelpful[]
+
+  @@unique([userId, bookId])
+  @@index([bookId], map: "reviews_bookId_fkey")
+  @@index([userId], map: "reviews_userId_fkey")
+  @@map("reviews")
+}
+
+model WishlistItem {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@index([bookId])
+  @@map("wishlist_items")
+}
+
+model Address {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  label         String   @default("Nhà riêng")
+  recipientName String
+  phone         String
+  province      String
+  district      String
+  ward          String
+  addressLine   String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isDefault])
+  @@map("addresses")
+}
+
+model Coupon {
+  id              Int        @id @default(autoincrement())
+  code            String     @unique
+  type            CouponType
+  value           Float
+  minimumOrder    Float      @default(0)
+  maximumDiscount Float?
+  usageLimit      Int?
+  usedCount       Int        @default(0)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  active          Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  orders          Order[]
+
+  @@index([active, startsAt, expiresAt])
+  @@map("coupons")
+}
+
+model InventoryBatch {
+  id                Int                   @id @default(autoincrement())
+  bookId            Int
+  batchCode         String                @unique
+  receivedQuantity  Int
+  remainingQuantity Int
+  unitCost          Float?
+  note              String?               @db.Text
+  receivedAt        DateTime              @default(now())
+  createdAt         DateTime              @default(now())
+  book              Book                  @relation(fields: [bookId], references: [id], onDelete: Restrict)
+  allocations       InventoryAllocation[]
+
+  @@index([bookId, receivedAt])
+  @@map("inventory_batches")
+}
+
+model ReviewHelpful {
+  id        Int      @id @default(autoincrement())
+  reviewId  Int
+  userId    Int
+  createdAt DateTime @default(now())
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([userId])
+  @@map("review_helpful_votes")
+}
+
+model BlogPost {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  excerpt     String?   @db.Text
+  content     String    @db.LongText
+  coverImage  String?
+  authorName  String
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, publishedAt])
+  @@map("blog_posts")
+}
+
+model NewsletterSubscriber {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  active       Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
+model EmailOutbox {
+  id        Int         @id @default(autoincrement())
+  recipient String
+  subject   String
+  body      String      @db.LongText
+  status    EmailStatus @default(QUEUED)
+  createdAt DateTime    @default(now())
+
+  @@index([status, createdAt])
+  @@map("email_outbox")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+  VNPAY
+  MOMO
+  BANKING
+  CARD
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+}
+
+enum BookBinding {
+  PAPERBACK
+  HARDCOVER
+  DUST_JACKET
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+  FREE_SHIPPING
+}
+
+enum EmailStatus {
+  QUEUED
+  SENT
+  FAILED
+}
