@@ -25,7 +25,7 @@ export class CategoryService {
     return category;
   }
 
-  async create(data: { name: string; slug: string; description?: string }) {
+  async create(data: { name: string; slug: string; description?: string; isActive?: boolean }) {
     const existing = await prisma.category.findUnique({
       where: { name: data.name },
     });
@@ -37,7 +37,7 @@ export class CategoryService {
     return prisma.category.create({ data });
   }
 
-  async update(id: number, data: { name?: string; slug?: string; description?: string }) {
+  async update(id: number, data: { name?: string; slug?: string; description?: string; isActive?: boolean }) {
     await this.getById(id);
     return prisma.category.update({
       where: { id },

@@ -1,71 +1,26 @@
-// src/pages/admin/AdminBooks.tsx
-import React from 'react';
-import { mockBooks } from '../../data/mockData';
-import { formatVND } from '../../types/formatVND';
-import Button from '../../components/ui/Button';
-import { PlusCircle, Edit2, Trash2, BookOpen } from 'lucide-react';
-
-export const AdminBooks: React.FC = () => {
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 800, color: '#2C3E50', margin: '0 0 6px 0' }}>
-            Quản Lý Sách (Kho Sách)
-          </h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#64748B' }}>
-            Quản lý thông tin đầu sách, giá bán, số lượng tồn kho (Placeholder cho FE2).
-          </p>
-        </div>
-        <Button variant="primary" icon={<PlusCircle size={16} />}>
-          Thêm Sách Mới
-        </Button>
-      </div>
-
-      <div style={{ backgroundColor: '#FFFFFF', borderRadius: '10px', border: '1px solid #E2E8F0', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#F8FAFC', color: '#64748B', borderBottom: '1px solid #E2E8F0' }}>
-              <th style={{ padding: '14px 20px' }}>Bìa</th>
-              <th style={{ padding: '14px 20px' }}>Tên Sách</th>
-              <th style={{ padding: '14px 20px' }}>Tác Giả</th>
-              <th style={{ padding: '14px 20px' }}>Danh Mục</th>
-              <th style={{ padding: '14px 20px' }}>Giá Bán</th>
-              <th style={{ padding: '14px 20px', textAlign: 'right' }}>Thao Tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mockBooks.map((b) => (
-              <tr key={b.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                <td style={{ padding: '12px 20px' }}>
-                  <div style={{ width: '38px', height: '52px', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#2C3E50', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img
-                      src={b.coverImage}
-                      alt={b.title}
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
-                    <BookOpen size={16} color="#94A3B8" />
-                  </div>
-                </td>
-                <td style={{ padding: '12px 20px', fontWeight: 700, color: '#2C3E50' }}>{b.title}</td>
-                <td style={{ padding: '12px 20px', color: '#64748B' }}>{b.author}</td>
-                <td style={{ padding: '12px 20px' }}>{b.categoryName}</td>
-                <td style={{ padding: '12px 20px', fontWeight: 700, color: '#E74C3C' }}>{formatVND(b.price)}</td>
-                <td style={{ padding: '12px 20px', textAlign: 'right' }}>
-                  <div style={{ display: 'inline-flex', gap: '8px' }}>
-                    <Button variant="outline" size="sm" icon={<Edit2 size={13} />}>Sửa</Button>
-                    <Button variant="danger" size="sm" icon={<Trash2 size={13} />}>Xóa</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-export default AdminBooks;
-
+import React,{useEffect,useState} from 'react';
+import {api} from '../../api/httpClient';import {fetchBooks} from '../../api/bookApi';import type {Book} from '../../types';import {formatVND} from '../../types/formatVND';import {toast} from '../../components/ui/Toast';
+type Category={id:number;name:string};
+const empty={title:'',author:'',price:0,stock:0,categoryId:0,description:'',coverImage:''};
+export default function AdminBooks(){const [books,setBooks]=useState<Book[]>([]),[categories,setCategories]=useState<Category[]>([]),[page,setPage]=useState(1),[pages,setPages]=useState(1),[loading,setLoading]=useState(false),[editing,setEditing]=useState<number|null>(null),[form,setForm]=useState(empty),[show,setShow]=useState(false);
+ const load=async()=>{setLoading(true);try{const x=await fetchBooks({page,limit:12});setBooks(x.books);setPages(x.pagination?.totalPages||1)}catch{toast.error('Không thể tải danh sách sách')}finally{setLoading(false)}};
+ useEffect(()=>{load()},[page]);useEffect(()=>{api.get('/categories').then(r=>setCategories(r.data.data)).catch(()=>{})},[]);
+ const add=()=>{setEditing(null);setForm(empty);setShow(true)};
+ const change=(key:keyof typeof empty,value:string)=>setForm(f=>({...f,[key]:['price','stock','categoryId'].includes(key)?Number(value):value}));
+ const startEdit=async(id:string)=>{try{const r=await api.get(`/books/${id}`);const b=r.data.data;setEditing(b.id);setForm({title:b.title,author:b.author,price:b.price,stock:b.stock,categoryId:b.categoryId,description:b.description||'',coverImage:b.coverImage||''});setShow(true)}catch{toast.error('Không thể tải chi tiết sách')}};
+ const save=async(e:React.FormEvent)=>{e.preventDefault();try{if(editing)await api.put(`/books/${editing}`,form);else await api.post('/books',form);setShow(false);await load();toast.success('Đã lưu sách')}catch{toast.error('Không thể lưu sách')}};
+ const remove=async(b:Book)=>{if(!window.confirm(`Xóa sách "${b.title}"?`))return;try{await api.delete(`/books/${b.id}`);await load();toast.success('Đã xóa sách')}catch{toast.error('Không thể xóa sách (có thể đã phát sinh đơn hàng)')}};
+ return <div style={{padding:20}}><h1>Quản lý sách</h1><button onClick={add}>Thêm sách mới</button>
+ {show&&<form onSubmit={save} style={{border:'1px solid #ddd',padding:16,display:'grid',gap:8,maxWidth:550,marginTop:16}}>
+ <h2>{editing?'Sửa sách':'Thêm sách'}</h2>
+ <label>Tên sách <input required value={form.title} onChange={e=>change('title',e.target.value)}/></label>
+ <label>Tác giả (nhập đúng theo thông tin trên bìa sách thật) <input required value={form.author} onChange={e=>change('author',e.target.value)}/><small style={{display:"block",color:"#64748b"}}>Ảnh bìa SVG trong dự án chỉ là minh họa. Cần điền tác giả thật đã xác minh.</small></label>
+ <label>Giá <input required type="number" min="1" value={form.price} onChange={e=>change('price',e.target.value)}/></label>
+ <label>Tồn kho <input required type="number" min="0" value={form.stock} onChange={e=>change('stock',e.target.value)}/></label>
+ <label>Danh mục <select required value={form.categoryId} onChange={e=>change('categoryId',e.target.value)}><option value={0}>Chọn danh mục</option>{categories.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
+ <label>Ảnh bìa (URL) <input value={form.coverImage} onChange={e=>change('coverImage',e.target.value)}/></label>
+ <label>Mô tả <textarea value={form.description} onChange={e=>change('description',e.target.value)}/></label>
+ <div><button type="submit">Lưu</button> <button type="button" onClick={()=>setShow(false)}>Hủy</button></div></form>}
+ {loading?<p>Đang tải...</p>:<table style={{width:'100%',marginTop:20,textAlign:'left'}}><thead><tr><th>Tên sách</th><th>Tác giả</th><th>Giá</th><th>Kho</th><th>Thao tác</th></tr></thead><tbody>{books.map(b=><tr key={b.id}><td>{b.title}</td><td>{b.author && b.author !== "Đang cập nhật" ? b.author : <span style={{color:"#a16207"}}>Chưa xác minh — nhấn Sửa</span>}</td><td>{formatVND(b.price)}</td><td>{b.stock}</td><td><button onClick={()=>startEdit(b.id)}>Sửa</button> <button onClick={()=>remove(b)}>Xóa</button></td></tr>)}</tbody></table>}
+ <p><button disabled={page<=1} onClick={()=>setPage(p=>p-1)}>Trước</button> {page}/{pages} <button disabled={page>=pages} onClick={()=>setPage(p=>p+1)}>Sau</button></p></div>;
+}

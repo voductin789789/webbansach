@@ -141,10 +141,24 @@ const categoryMap = new Map<string, number>(
             continue;
         }
 
-        await prisma.book.upsert({
-            where: { slug: book.slug },
-            update: {},
-            create: {
+        // Chỉ làm mới dữ liệu demo cũ, không ghi đè thông tin đã chỉnh trong Admin.
+        const existing = await prisma.book.findUnique({ where: { slug: book.slug } });
+        if (existing) {
+            const updates: { author?: string; description?: string | null; coverImage?: string | null } = {};
+            if (/mô phỏng|dữ liệu demo|^đang cập nhật$/i.test(existing.author) && book.author && !/^đang cập nhật$|mô phỏng|dữ liệu demo/i.test(book.author)) updates.author = book.author;
+            if (!existing.description || /dữ liệu mẫu|dữ liệu mô phỏng|dữ liệu demo|Thông tin mô tả chi tiết sẽ được cập nhật/i.test(existing.description)) {
+                updates.description = book.description ?? null;
+            }
+            if (!existing.coverImage || /placeholder/i.test(existing.coverImage)) {
+                updates.coverImage = book.coverImage ?? null;
+            }
+            if (Object.keys(updates).length) {
+                await prisma.book.update({ where: { slug: book.slug }, data: updates });
+            }
+            continue;
+        }
+        await prisma.book.create({
+            data: {
                 title: book.title,
                 slug: book.slug,
                 author: book.author,

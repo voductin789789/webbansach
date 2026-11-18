@@ -1,137 +1,28 @@
-// src/components/common/BookCard.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Book } from '../../types';
+import { Link, useNavigate } from 'react-router-dom';
+import type { Book } from '../../types';
 import { formatVND } from '../../types/formatVND';
 import { useCart } from '../../providers/CartProvider';
-import { ShoppingCart, Star } from 'lucide-react';
-import Button from '../ui/Button';
+import { ShoppingCart, Zap } from 'lucide-react';
 import BookCover from './BookCover';
 
-export interface BookCardProps {
-  book: Book;
+export default function BookCard({ book }: {book: Book}) {
+ const {addItem}=useCart(); const navigate=useNavigate(); const available=(book.stock??0)>0;
+ const item={bookId:book.id,title:book.title,author:book.author,price:book.price,originalPrice:book.originalPrice,coverImage:book.coverImage,stock:book.stock};
+ const buy=()=>{if(!available)return;sessionStorage.setItem('bookstore_buy_now',JSON.stringify({...item,quantity:1}));navigate('/checkout?mode=buy-now')};
+ return <article className="book-card">
+  <Link to={`/books/${book.id}`} className="book-card-link">
+   <div className="book-card-image-wrap"><BookCover book={book}/>{!available&&<span className="book-soldout">Hết hàng</span>}</div>
+   <div className="book-card-info">
+    <span className="book-category">{book.categoryName||'Sách'}</span>
+    <h3 className="book-card-title">{book.title}</h3>
+    {book.author&&!/đang cập nhật|mô phỏng/i.test(book.author)&&<p className="book-card-author">{book.author}</p>}
+    <div className="book-card-price"><strong>{formatVND(book.price)}</strong>{book.originalPrice&&book.originalPrice>book.price&&<del>{formatVND(book.originalPrice)}</del>}</div>
+   </div>
+  </Link>
+  <div className="book-card-actions">
+   <button type="button" className="outline-action" title="Thêm vào giỏ hàng" disabled={!available} onClick={()=>addItem(item,1)}><ShoppingCart size={16}/><span>Thêm giỏ</span></button>
+   <button type="button" className="solid-action" disabled={!available} onClick={buy}><Zap size={16}/><span>Mua ngay</span></button>
+  </div>
+ </article>;
 }
-
-export const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  const { addItem } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem({
-      bookId: book.id,
-      title: book.title,
-      author: book.author,
-      price: book.price,
-      originalPrice: book.originalPrice,
-      coverImage: book.coverImage,
-    }, 1);
-  };
-
-  return (
-    <div className="book-card">
-      <Link to={`/books/${book.id}`} className="book-card-link">
-        {/* Cover Image Wrapper cố định chiều cao 240px */}
-        <div className="book-card-image-wrap">
-          <BookCover book={book} />
-
-          {/* Discount Badge */}
-          {book.discountPercent && book.discountPercent > 0 && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                backgroundColor: '#E74C3C',
-                color: '#FFFFFF',
-                fontSize: '12px',
-                fontWeight: 700,
-                padding: '3px 8px',
-                borderRadius: '4px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                zIndex: 2,
-              }}
-            >
-              -{book.discountPercent}%
-            </span>
-          )}
-
-          {/* New Tag */}
-          {book.isNew && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                backgroundColor: '#10B981',
-                color: '#FFFFFF',
-                fontSize: '11px',
-                fontWeight: 700,
-                padding: '3px 7px',
-                borderRadius: '4px',
-                zIndex: 2,
-              }}
-            >
-              MỚI
-            </span>
-          )}
-        </div>
-
-        {/* Content Body đồng bộ chiều cao */}
-        <div className="book-card-body">
-          <div>
-            {book.categoryName && (
-              <span style={{ fontSize: '12px', color: '#64748B', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
-                {book.categoryName}
-              </span>
-            )}
-
-            <h3 className="book-card-title" title={book.title}>
-              {book.title}
-            </h3>
-
-            <p className="book-card-author">
-              Tác giả: <strong style={{ color: '#4B5563' }}>{book.author}</strong>
-            </p>
-
-            {/* Rating */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '10px' }}>
-              <Star size={14} fill="#F59E0B" color="#F59E0B" />
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#374151' }}>{book.rating}</span>
-              {book.reviewCount && (
-                <span style={{ fontSize: '11px', color: '#9CA3AF' }}>({book.reviewCount})</span>
-              )}
-            </div>
-          </div>
-
-          <div>
-            {/* Price section */}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '17px', fontWeight: 800, color: '#E74C3C' }}>
-                {formatVND(book.price)}
-              </span>
-              {book.originalPrice && book.originalPrice > book.price && (
-                <span style={{ fontSize: '13px', color: '#94A3AF', textDecoration: 'line-through' }}>
-                  {formatVND(book.originalPrice)}
-                </span>
-              )}
-            </div>
-
-            {/* Action Button */}
-            <Button
-              variant="primary"
-              size="sm"
-              fullWidth
-              onClick={handleAddToCart}
-              icon={<ShoppingCart size={15} />}
-            >
-              Thêm vào giỏ
-            </Button>
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
-};
-
-export default BookCard;

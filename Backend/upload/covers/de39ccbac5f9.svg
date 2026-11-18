@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="520" viewBox="0 0 360 520" role="img" aria-label="Bìa minh họa: Nền tảng của Lắng nghe chủ động">
+<rect width="360" height="520" fill="#124c4b"/>
+<rect x="18" y="18" width="324" height="484" rx="4" fill="none" stroke="#e6b75c" stroke-opacity=".7" stroke-width="2"/>
+<rect x="33" y="33" width="294" height="454" rx="3" fill="none" stroke="#b8e9d6" stroke-opacity=".35"/>
+<path d="M -100 0 L 180 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M -64 0 L 216 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M -28 0 L 252 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 8 0 L 288 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 44 0 L 324 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 80 0 L 360 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 116 0 L 396 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 152 0 L 432 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 188 0 L 468 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/><path d="M 224 0 L 504 190" stroke="#b8e9d6" opacity=".22" stroke-width="6"/>
+<rect x="42" y="179" width="276" height="160" rx="6" fill="#124c4b" opacity=".94"/>
+<text x="180" y="235" font-size="26" fill="#e6b75c" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" text-anchor="middle">Nền tảng của Lắng</text><text x="180" y="270" font-size="26" fill="#e6b75c" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" text-anchor="middle">nghe chủ động</text>
+<path d="M130 440 H230" stroke="#e6b75c" stroke-width="3"/>
+<text x="180" y="463" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#b8e9d6">KY NANG SONG</text>
+<text x="180" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#b8e9d6" opacity=".7">BÌA MINH HỌA</text>
+</svg>

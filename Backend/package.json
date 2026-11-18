@@ -9,7 +9,10 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "seed": "tsx src/data/seed.ts"
+    "seed": "tsx src/data/seed.ts",
+    "test:integration": "node --test tests/*.integration.test.cjs",
+    "admin:create": "tsx scripts/create-admin.ts",
+    "admin:default": "tsx scripts/reset-default-admin.ts"
   },
   "keywords": [],
   "author": "",

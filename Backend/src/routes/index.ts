@@ -3,6 +3,8 @@ import authRoutes from './auth.routes';
 import categoryRoutes from './category.routes';
 import bookRoutes from './book.routes';
 import orderRoutes from './order.routes';
+import contactRoutes from './contact.routes';
+import cartRoutes from './cart.routes';
 
 const router = Router();
 
@@ -14,5 +16,7 @@ router.use('/auth', authRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/books', bookRoutes);
 router.use('/orders', orderRoutes);
+router.use('/cart', cartRoutes);
+router.use('/contact', contactRoutes);
 
 export default router;

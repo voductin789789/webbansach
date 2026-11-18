@@ -1,41 +1,39 @@
+import './AuthPages.css';
 // src/pages/LoginPage.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { api } from '../api/httpClient';
 import { useAuth } from '../providers/AuthProvider';
 import { toast } from '../components/ui/Toast';
 import { Button, Input } from '../components/ui';
 import { BookOpen, Lock, Mail } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('admin@bookstore.vn');
-  const [password, setPassword] = useState('123456');
-  const [role, setRole] = useState<'admin' | 'customer'>('admin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const location = useLocation();
+  const redirectTo = (location.state as {from?:string} | null)?.from;
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(
-      {
-        id: 'user-1',
-        name: role === 'admin' ? 'Quản Trị Viên (Admin)' : 'Nguyễn Khách Hàng',
-        email,
-        role,
-      },
-      'mock_jwt_token_secret_123'
-    );
-    toast.success(`Đăng nhập thành công với vai trò ${role.toUpperCase()}!`);
-    if (role === 'admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/');
-    }
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { user, token } = response.data.data;
+      login({ ...user, id: String(user.id), role: user.role.toLowerCase() }, token);
+      toast.success('Đăng nhập thành công');
+      navigate(redirectTo?.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : (user.role === 'ADMIN' ? '/admin/dashboard' : '/'), {replace:true});
+    } catch { toast.error('Đăng nhập thất bại, vui lòng kiểm tra tài khoản'); }
+    finally { setSubmitting(false); }
   };
 
   return (
     <div
       style={{
-        minHeight: '70vh',
+        minHeight: '70vh', background: 'radial-gradient(ellipse at 10% 15%,#fcebe7 0,transparent 36%),#f6f8fb',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -45,12 +43,12 @@ export const LoginPage: React.FC = () => {
       <div
         style={{
           backgroundColor: '#FFFFFF',
-          borderRadius: '12px',
+          borderRadius: '20px',
           border: '1px solid #E2E8F0',
-          padding: '36px',
+          padding: '44px',
           width: '100%',
-          maxWidth: '420px',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
+          maxWidth: '465px',
+          boxShadow: '0 24px 64px rgba(42,58,80,0.1)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
@@ -96,38 +94,11 @@ export const LoginPage: React.FC = () => {
             required
           />
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#2C3E50', marginBottom: '8px' }}>
-              Vai trò trải nghiệm:
-            </label>
-            <div style={{ display: 'flex', gap: '16px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="admin"
-                  checked={role === 'admin'}
-                  onChange={() => setRole('admin')}
-                />
-                Quản trị viên (Admin)
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="customer"
-                  checked={role === 'customer'}
-                  onChange={() => setRole('customer')}
-                />
-                Khách hàng
-              </label>
-            </div>
-          </div>
-
           <Button type="submit" variant="primary" fullWidth size="lg">
-            Đăng Nhập
+            {submitting ? 'Đang đăng nhập...' : 'Đăng Nhập'}
           </Button>
         </form>
+        <p style={{ textAlign: 'center' }}>Chưa có tài khoản? <Link to="/register">Đăng ký</Link></p>
       </div>
     </div>
   );

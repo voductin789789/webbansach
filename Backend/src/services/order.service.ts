@@ -17,6 +17,7 @@ export interface CreateOrderInput {
   shippingAddress: string;
   paymentMethod?: 'COD' | 'VNPAY' | 'MOMO' | 'BANKING';
   note?: string;
+  clientRequestId?: string;
   items: CreateOrderItemInput[];
 }
 
@@ -69,6 +70,17 @@ export class OrderService {
       );
     }
 
+    // Cùng một khóa yêu cầu => trả lại đơn cũ, không trừ kho lần 2.
+    if (data.clientRequestId) {
+      const existing = await prisma.order.findUnique({
+        where: { clientRequestId: data.clientRequestId }, include: { items: { include: { book: true } } },
+      });
+      if (existing) {
+        if (existing.userId !== userId) throw createHttpError('Khóa yêu cầu đã được sử dụng', 409);
+        return existing;
+      }
+    }
+
     // Gộp những sách có cùng bookId
     const quantityMap = new Map<number, number>();
 
@@ -113,7 +125,8 @@ export class OrderService {
     const orderCode = `ORD-${randomUUID()}`;
 
     // Transaction đảm bảo tất cả thành công hoặc rollback
-    const order = await prisma.$transaction(
+    let order;
+    try { order = await prisma.$transaction(
       async (tx: any) => {
 
         // Lấy sách từ MySQL
@@ -194,6 +207,7 @@ export class OrderService {
         const newOrder = await tx.order.create({
           data: {
             orderCode,
+            clientRequestId: data.clientRequestId,
             userId,
             recipientName: data.recipientName,
             recipientPhone: data.recipientPhone,
@@ -203,6 +217,14 @@ export class OrderService {
             note: data.note,
             items: {
               create: orderItemsData
+            },
+            statusHistory: {
+              create: {
+                toStatus: 'PENDING',
+                changedById: userId,
+                changedByRole: 'CUSTOMER',
+                note: 'Khách hàng đặt hàng thành công'
+              }
             }
           },
           include: {
@@ -214,28 +236,40 @@ export class OrderService {
           }
         });
 
-        // Xóa sách đã đặt khỏi giỏ hàng
-        const userCart = await tx.cart.findUnique({
-          where: {
-            userId
-          }
-        });
-
+        // Chỉ trừ các số lượng vừa mua khỏi giỏ MySQL.
+        // Nếu Mua ngay 1 cuốn trong khi giỏ có 3 cuốn, giữ lại 2 cuốn.
+        const userCart = await tx.cart.findUnique({ where: { userId } });
         if (userCart) {
-          await tx.cartItem.deleteMany({
-            where: {
-              cartId: userCart.id,
-              bookId: {
-                in: bookIds
-              }
+          for (const purchased of items) {
+            const entry = await tx.cartItem.findUnique({
+              where: { cartId_bookId: { cartId: userCart.id, bookId: purchased.bookId } }
+            });
+            if (!entry) continue;
+            if (entry.quantity <= purchased.quantity) {
+              await tx.cartItem.delete({ where: { id: entry.id } });
+            } else {
+              await tx.cartItem.update({
+                where: { id: entry.id },
+                data: { quantity: { decrement: purchased.quantity } }
+              });
             }
-          });
+          }
         }
 
         return newOrder;
       }
     );
 
+    } catch (error: any) {
+      // Nếu hai request cùng khóa chạy đồng thời, unique constraint bảo vệ tồn kho.
+      if (data.clientRequestId && error?.code === 'P2002') {
+        const previous = await prisma.order.findUnique({
+          where: { clientRequestId: data.clientRequestId }, include: { items: { include: { book: true } } },
+        });
+        if (previous && previous.userId === userId) return previous;
+      }
+      throw error;
+    }
     return order;
   }
 
@@ -288,7 +322,8 @@ export class OrderService {
           include: {
             book: true
           }
-        }
+        },
+        statusHistory: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] }
       }
     });
 
@@ -377,36 +412,82 @@ export class OrderService {
   // 5. ADMIN - CẬP NHẬT TRẠNG THÁI ĐƠN
   // ===================================================
 
-  async updateOrderStatus(
-    id: number,
-    status: OrderStatus
-  ) {
-
-    const existingOrder = await prisma.order.findUnique({
-      where: {
-        id
+  // Chuyển trạng thái có điều kiện trong transaction để ngăn tranh chấp.
+  // Hoàn tồn kho chỉ khi chuyển lần đầu từ PENDING sang CANCELLED.
+  async updateOrderStatus(id: number, status: OrderStatus, adminId: number) {
+    return prisma.$transaction(async (tx) => {
+      const current = await tx.order.findUnique({ where: { id }, include: { items: true } });
+      if (!current) throw createHttpError('Không tìm thấy đơn hàng', 404);
+      const allowed: Record<OrderStatus, OrderStatus[]> = {
+        PENDING: ['PROCESSING', 'CANCELLED'],
+        PROCESSING: ['SHIPPED'],
+        SHIPPED: ['DELIVERED'],
+        DELIVERED: [],
+        CANCELLED: [],
+      };
+      if (!allowed[current.orderStatus as OrderStatus].includes(status)) {
+        throw createHttpError(`Không thể chuyển từ ${current.orderStatus} sang ${status}`, 409);
       }
-    });
-
-    if (!existingOrder) {
-      throw createHttpError(
-        'Không tìm thấy đơn hàng',
-        404
-      );
-    }
-
-    return prisma.order.update({
-      where: {
-        id
-      },
-      data: {
-        orderStatus: status
-      },
-      include: {
-        items: true
+      const changed = await tx.order.updateMany({
+        where: { id, orderStatus: current.orderStatus },
+        data: { orderStatus: status },
+      });
+      if (changed.count !== 1) throw createHttpError('Đơn hàng vừa được thay đổi, hãy tải lại', 409);
+      if (status === 'CANCELLED') {
+        for (const item of current.items) {
+          await tx.book.update({ where: { id: item.bookId }, data: { stock: { increment: item.quantity } } });
+        }
       }
+      await tx.orderStatusHistory.create({ data: {
+        orderId: id, fromStatus: current.orderStatus, toStatus: status,
+        changedById: adminId, changedByRole: 'ADMIN',
+        note: status === 'CANCELLED' ? 'Người bán hủy đơn và hoàn tồn kho' : null
+      }});
+      return tx.order.findUnique({ where: { id }, include: { items: true, statusHistory: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] } } });
     });
   }
+
+  // Chỉ xác nhận PENDING -> PROCESSING. Một transaction chung cho trạng thái và lịch sử.
+  async confirmAllPendingOrders(adminId: number) {
+    return prisma.$transaction(async (tx) => {
+      const pending = await tx.order.findMany({ where: { orderStatus: 'PENDING' }, select: { id: true } });
+      if (pending.length === 0) return { confirmed: 0 };
+      const ids = pending.map(order => order.id);
+      const changed = await tx.order.updateMany({
+        where: { id: { in: ids }, orderStatus: 'PENDING' },
+        data: { orderStatus: 'PROCESSING' }
+      });
+      if (changed.count !== ids.length) {
+        throw createHttpError('Có đơn vừa thay đổi trạng thái. Hãy tải lại và thử lại.', 409);
+      }
+      await tx.orderStatusHistory.createMany({ data: ids.map(orderId => ({
+        orderId, fromStatus: 'PENDING', toStatus: 'PROCESSING',
+        changedById: adminId, changedByRole: 'ADMIN', note: 'Xác nhận hàng loạt bởi quản trị viên'
+      })) });
+      return { confirmed: ids.length };
+    }, { timeout: 30000 });
+  }
+
+  async cancelMyOrder(id: number, userId: number) {
+    return prisma.$transaction(async (tx) => {
+      const current = await tx.order.findUnique({ where: { id }, include: { items: true } });
+      if (!current || current.userId !== userId) throw createHttpError('Không tìm thấy đơn hàng của bạn', 404);
+      if (current.orderStatus !== 'PENDING') throw createHttpError('Chỉ được hủy đơn đang chờ xác nhận', 409);
+      const result = await tx.order.updateMany({
+        where: { id, userId, orderStatus: 'PENDING' }, data: { orderStatus: 'CANCELLED' },
+      });
+      if (result.count !== 1) throw createHttpError('Đơn hàng đã được cập nhật', 409);
+      for (const item of current.items) {
+        await tx.book.update({ where: { id: item.bookId }, data: { stock: { increment: item.quantity } } });
+      }
+      await tx.orderStatusHistory.create({ data: {
+        orderId: id, fromStatus: 'PENDING', toStatus: 'CANCELLED',
+        changedById: userId, changedByRole: 'CUSTOMER', note: 'Khách hàng hủy đơn và hoàn tồn kho'
+      }});
+      return tx.order.findUnique({ where: { id }, include: { items: true, statusHistory: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] } } });
+    });
+  }
+
 }
 
 // =====================================================

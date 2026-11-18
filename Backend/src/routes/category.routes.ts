@@ -24,6 +24,9 @@ router.put(
   (req, res, next) => categoryController.update(req, res, next)
 );
 
+router.patch('/:id/status', authMiddleware, roleMiddleware('ADMIN'),
+  (req, res, next) => categoryController.setStatus(req, res, next));
+
 router.delete(
   '/:id',
   authMiddleware,

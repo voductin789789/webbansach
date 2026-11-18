@@ -1,10 +1,10 @@
 // src/components/layout/Header.tsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../providers/CartProvider';
 import { useAuth } from '../../providers/AuthProvider';
+import SearchSuggestions from '../common/SearchSuggestions';
 import {
-  Search,
   ShoppingCart,
   User as UserIcon,
   BookOpen,
@@ -20,23 +20,15 @@ import {
 export const Header: React.FC = () => {
   const { totalItems } = useCart();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
-  const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/books?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
 
   const navLinks = [
     { label: 'Trang chủ', path: '/' },
     { label: 'Danh mục sách', path: '/categories' },
-    { label: 'Sách mới', path: '/books?filter=new' },
-    { label: 'Khuyến mãi', path: '/books?filter=discount' },
-    { label: 'Tác giả', path: '/authors' },
+    { label: 'Sách mới', path: '/books?sort=newest' },
+    ...(isAuthenticated && !isAdmin ? [{ label: 'Đơn mua', path: '/profile' }] : []),
+    
+    
     { label: 'Giới thiệu', path: '/about' },
     { label: 'Liên hệ', path: '/contact' },
   ];
@@ -64,16 +56,16 @@ export const Header: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Phone size={14} color="#E74C3C" /> Hotline: <strong>1900 6868</strong> (8:00 - 21:00)
+              <Phone size={14} color="#E74C3C" /> Website Bán Sách Trực Tuyến
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Truck size={14} color="#E74C3C" /> Miễn phí vận chuyển cho đơn từ 250.000₫
+              <Truck size={14} color="#E74C3C" /> Đặt sách thuận tiện tại website
             </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ShieldCheck size={14} color="#E74C3C" /> 100% Sách Thật - Đổi trả 7 ngày
+              <ShieldCheck size={14} color="#E74C3C" /> Theo dõi đơn hàng trong tài khoản
             </span>
             {isAdmin && (
               <Link
@@ -153,56 +145,8 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Search Bar - Center */}
-          <form
-            onSubmit={handleSearchSubmit}
-            style={{
-              flex: 1,
-              maxWidth: '560px',
-              display: 'flex',
-              position: 'relative',
-            }}
-          >
-            <input
-              type="text"
-              placeholder="Tìm kiếm sách theo tên tác phẩm, tác giả, nhà xuất bản..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px 16px',
-                paddingRight: '100px',
-                borderRadius: '6px',
-                border: '2px solid #2C3E50',
-                fontSize: '14px',
-                outline: 'none',
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                position: 'absolute',
-                right: '3px',
-                top: '3px',
-                bottom: '3px',
-                backgroundColor: '#2C3E50',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: '4px',
-                padding: '0 18px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '14px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'background-color 0.2s',
-              }}
-            >
-              <Search size={16} />
-              <span>Tìm</span>
-            </button>
-          </form>
+          {/* Tìm kiếm có gợi ý theo dữ liệu Backend */}
+          <SearchSuggestions />
 
           {/* Right Actions: Cart & Account */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>

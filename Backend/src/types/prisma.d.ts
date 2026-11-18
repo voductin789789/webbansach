@@ -11,6 +11,7 @@ declare module '@prisma/client' {
     cartItem: any;
     order: any;
     orderItem: any;
+    orderStatusHistory: any;
     review: any;
   }
 }

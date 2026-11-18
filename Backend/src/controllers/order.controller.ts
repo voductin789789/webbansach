@@ -35,6 +35,8 @@ const createOrderSchema = z.object({
 
   note: z.string().trim().optional(),
 
+  clientRequestId: z.string().uuid().optional(),
+
   items: z
     .array(
       z.object({
@@ -210,10 +212,25 @@ export class OrderController {
     }
   }
 
+  async cancelMyOrder(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const orderId = orderIdSchema.parse(req.params.id);
+      const order = await orderService.cancelMyOrder(orderId, req.user!.id);
+      sendSuccess(res, order, 'Hủy đơn và hoàn tồn kho thành công');
+    } catch (error) { next(error); }
+  }
+
   // ----------------------------------------------------------
   // 5. ADMIN: CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
   // PATCH /api/orders/:id/status
   // ----------------------------------------------------------
+
+  async confirmAllPendingOrders(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await orderService.confirmAllPendingOrders(req.user!.id);
+      sendSuccess(res, result, `Đã xác nhận ${result.confirmed} đơn chờ xác nhận`);
+    } catch (error) { next(error); }
+  }
 
   async updateOrderStatus(
     req: AuthRequest,
@@ -229,7 +246,8 @@ export class OrderController {
       const updatedOrder =
         await orderService.updateOrderStatus(
           orderId,
-          status
+          status,
+          req.user!.id
         );
 
       sendSuccess(

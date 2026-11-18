@@ -1,6 +1,5 @@
-// src/providers/AuthProvider.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, UserRole } from '../types';
+import type { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
@@ -14,78 +13,77 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// sessionStorage tách phiên đăng nhập giữa các tab cùng localhost:5173.
+// KHÔNG tự chuyển token từ localStorage: token cũ được chia sẻ giữa các tab.
+const TOKEN_KEY = 'access_token';
+const USER_KEY = 'auth_user';
+function readSession(): {user: User | null; token: string | null} {
+  try {
+    const token = sessionStorage.getItem(TOKEN_KEY);
+    const raw = sessionStorage.getItem(USER_KEY);
+    if (!token || !raw) return { user: null, token: null };
+    const user = JSON.parse(raw) as User;
+    if (!user || !user.id || !user.role) return { user: null, token: null };
+    return { user, token };
+  } catch {
+    return { user: null, token: null };
+  }
+}
+function clearSession() {
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(USER_KEY);
+}
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const stored = localStorage.getItem('auth_user');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
-
-  const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('access_token');
-  });
-
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('auth_user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('auth_user');
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('access_token', token);
-    } else {
-      localStorage.removeItem('access_token');
-    }
-  }, [token]);
+  const [initial] = useState(readSession);
+  const [user, setUser] = useState<User | null>(initial.user);
+  const [token, setToken] = useState<string | null>(initial.token);
 
   const login = (userData: User, newToken: string) => {
+    // Ghi ngay để interceptor dùng đúng JWT với request tiếp theo.
+    sessionStorage.setItem(USER_KEY, JSON.stringify(userData));
+    sessionStorage.setItem(TOKEN_KEY, newToken);
     setUser(userData);
     setToken(newToken);
   };
 
   const logout = () => {
+    clearSession();
     setUser(null);
     setToken(null);
-    localStorage.removeItem('auth_user');
-    localStorage.removeItem('access_token');
   };
 
   const updateUser = (data: Partial<User>) => {
-    setUser((prev) => (prev ? { ...prev, ...data } : null));
+    setUser(prev => {
+      if (!prev) return null;
+      const next = {...prev, ...data};
+      sessionStorage.setItem(USER_KEY, JSON.stringify(next));
+      return next;
+    });
   };
 
-  const isAuthenticated = Boolean(user && token);
-  const isAdmin = user?.role === 'admin';
+  // 401 từ một API có JWT: đóng phiên ở đúng tab đang gọi API.
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      clearSession();
+      setUser(null);
+      setToken(null);
+    };
+    window.addEventListener('bookstore:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('bookstore:unauthorized', handleUnauthorized);
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        isAuthenticated,
-        isAdmin,
-        login,
-        logout,
-        updateUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{
+    user, token,
+    isAuthenticated: Boolean(user && token),
+    isAdmin: user?.role?.toLowerCase() === 'admin',
+    login, logout, updateUser
+  }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error('useAuth phải được sử dụng bên trong AuthProvider');
-  }
+  if (!ctx) throw new Error('useAuth phải được sử dụng bên trong AuthProvider');
   return ctx;
 };
-
 export default AuthProvider;

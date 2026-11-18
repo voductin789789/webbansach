@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="520" viewBox="0 0 360 520" role="img" aria-label="Bìa minh họa: Bí quyết ứng dụng Xây dựng lòng tin">
+<rect width="360" height="520" fill="#4c254c"/>
+<rect x="18" y="18" width="324" height="484" rx="4" fill="none" stroke="#f3bfa4" stroke-opacity=".7" stroke-width="2"/>
+<rect x="33" y="33" width="294" height="454" rx="3" fill="none" stroke="#ede3ce" stroke-opacity=".35"/>
+<rect x="75" y="50" width="9" height="130" rx="3" fill="#ede3ce" opacity=".5"/><rect x="101" y="56" width="9" height="118" rx="3" fill="#ede3ce" opacity=".5"/><rect x="127" y="62" width="9" height="106" rx="3" fill="#ede3ce" opacity=".5"/><rect x="153" y="68" width="9" height="94" rx="3" fill="#ede3ce" opacity=".5"/><rect x="179" y="74" width="9" height="82" rx="3" fill="#ede3ce" opacity=".5"/><rect x="205" y="80" width="9" height="70" rx="3" fill="#ede3ce" opacity=".5"/><rect x="231" y="86" width="9" height="58" rx="3" fill="#ede3ce" opacity=".5"/><rect x="257" y="92" width="9" height="46" rx="3" fill="#ede3ce" opacity=".5"/><rect x="283" y="98" width="9" height="34" rx="3" fill="#ede3ce" opacity=".5"/>
+<rect x="42" y="179" width="276" height="160" rx="6" fill="#4c254c" opacity=".94"/>
+<text x="180" y="235" font-size="26" fill="#f3bfa4" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" text-anchor="middle">Bí quyết ứng dụng</text><text x="180" y="270" font-size="26" fill="#f3bfa4" font-family="DejaVu Sans,Arial,sans-serif" font-weight="700" text-anchor="middle">Xây dựng lòng tin</text>
+<path d="M130 440 H230" stroke="#f3bfa4" stroke-width="3"/>
+<text x="180" y="463" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="2" fill="#ede3ce">KY NANG SONG</text>
+<text x="180" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="9" fill="#ede3ce" opacity=".7">BÌA MINH HỌA</text>
+</svg>

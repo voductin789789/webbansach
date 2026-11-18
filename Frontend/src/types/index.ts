@@ -42,6 +42,7 @@ export interface CartItem {
   originalPrice?: number;
   coverImage: string;
   quantity: number;
+  stock?: number; // Tồn kho gần nhất được lấy từ Backend/MySQL
 }
 
 export type UserRole = 'customer' | 'admin';

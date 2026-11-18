@@ -1,7 +1,6 @@
 // src/pages/admin/AdminCategories.tsx
 import React, { useState, useEffect } from 'react';
 import { Category } from '../../types';
-import { mockCategories } from '../../data/mockData';
 import { api } from '../../api/httpClient';
 import { toast } from '../../components/ui/Toast';
 import { Button, Input, Modal, Spinner } from '../../components/ui';
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export const AdminCategories: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
@@ -39,20 +38,13 @@ export const AdminCategories: React.FC = () => {
   // Form errors
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-  // Fetch Categories từ API backend (BE2) hoặc dùng mock data
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await api.get<Category[]>('/categories');
-      if (response.data && Array.isArray(response.data)) {
-        setCategories(response.data);
-      }
-    } catch {
-      // Khi BE2 chưa sẵn sàng, giữ mockCategories làm dữ liệu demo
-      console.log('BE2 API chưa kết nối, sử dụng danh mục mẫu (mockCategories)');
-    } finally {
-      setLoading(false);
-    }
+      const response = await api.get<{ data: (Category & { id: number; _count?: { books: number } })[] }>('/categories');
+      setCategories(response.data.data.map(c => ({...c, id:String(c.id), bookCount:c._count?.books||0})));
+    } catch { toast.error('Không thể tải danh mục từ máy chủ'); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => {
@@ -120,80 +112,23 @@ export const AdminCategories: React.FC = () => {
 
   const handleSaveCategory = async () => {
     if (!validateForm()) return;
-
     try {
-      if (modalMode === 'create') {
-        const newCat: Category = {
-          id: `cat-${Date.now()}`,
-          name: currentCategory.name!.trim(),
-          slug: currentCategory.slug!.trim(),
-          description: currentCategory.description?.trim(),
-          icon: currentCategory.icon || '📚',
-          bookCount: 0,
-          isActive: currentCategory.isActive ?? true,
-        };
-
-        // Gửi API BE2 nếu có
-        try {
-          await api.post('/categories', newCat);
-        } catch {
-          // Fallback cập nhật local state
-        }
-
-        setCategories((prev) => [newCat, ...prev]);
-        toast.success(`Đã thêm danh mục "${newCat.name}" thành công!`);
-      } else {
-        // Edit mode
-        const updatedCat = currentCategory as Category;
-        try {
-          await api.put(`/categories/${updatedCat.id}`, updatedCat);
-        } catch {
-          // Fallback cập nhật local state
-        }
-
-        setCategories((prev) =>
-          prev.map((c) => (c.id === updatedCat.id ? updatedCat : c))
-        );
-        toast.success(`Đã cập nhật danh mục "${updatedCat.name}"!`);
-      }
-
-      setIsModalOpen(false);
-    } catch {
-      toast.error('Có lỗi xảy ra khi lưu danh mục.');
-    }
+      const body = {name:currentCategory.name?.trim(),slug:currentCategory.slug?.trim(),description:currentCategory.description?.trim(),isActive:currentCategory.isActive ?? true};
+      if (modalMode === 'create') await api.post('/categories',body);
+      else await api.put(`/categories/${currentCategory.id}`,body);
+      await fetchCategories();setIsModalOpen(false);toast.success('Lưu danh mục thành công');
+    } catch { toast.error('Lưu danh mục thất bại'); }
   };
-
   const handleToggleStatus = async (cat: Category) => {
-    const updatedStatus = !cat.isActive;
-    try {
-      await api.patch(`/categories/${cat.id}/status`, { isActive: updatedStatus });
-    } catch {
-      // Fallback
-    }
-
-    setCategories((prev) =>
-      prev.map((c) => (c.id === cat.id ? { ...c, isActive: updatedStatus } : c))
-    );
-    toast.info(`Đã ${updatedStatus ? 'kích hoạt' : 'ẩn'} danh mục "${cat.name}".`);
+    try { await api.patch(`/categories/${cat.id}/status`, { isActive: !cat.isActive });
+      await fetchCategories();toast.success('Đã thay đổi trạng thái danh mục'); }
+    catch {toast.error('Không thể thay đổi trạng thái danh mục');}
   };
-
-  const confirmDeleteCategory = (cat: Category) => {
-    setCategoryToDelete(cat);
-    setDeleteModalOpen(true);
-  };
-
+  const confirmDeleteCategory = (cat: Category) => {setCategoryToDelete(cat);setDeleteModalOpen(true);};
   const handleDeleteCategory = async () => {
     if (!categoryToDelete) return;
-    try {
-      await api.delete(`/categories/${categoryToDelete.id}`);
-    } catch {
-      // Fallback
-    }
-
-    setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete.id));
-    toast.success(`Đã xóa danh mục "${categoryToDelete.name}" thành công!`);
-    setDeleteModalOpen(false);
-    setCategoryToDelete(null);
+    try {await api.delete(`/categories/${categoryToDelete.id}`);await fetchCategories();toast.success('Đã xóa danh mục');setDeleteModalOpen(false);setCategoryToDelete(null);}
+    catch {toast.error('Xóa danh mục thất bại (có thể đang chứa sách)');}
   };
 
   return (

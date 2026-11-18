@@ -27,6 +27,7 @@ model User {
 }
 
 model Category {
+  isActive    Boolean  @default(true)
   id          Int      @id @default(autoincrement())
   name        String   @unique
   slug        String   @unique
@@ -92,6 +93,7 @@ model CartItem {
 model Order {
   id              Int           @id @default(autoincrement())
   orderCode       String        @unique
+  clientRequestId String?       @unique
   userId          Int
   recipientName   String
   recipientPhone  String
@@ -104,10 +106,27 @@ model Order {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   items           OrderItem[]
+  statusHistory   OrderStatusHistory[]
   user            User          @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "orders_userId_fkey")
   @@map("orders")
+}
+
+// Lịch sử trạng thái được ghi trong cùng transaction với mỗi lần chuyển trạng thái.
+model OrderStatusHistory {
+  id        Int         @id @default(autoincrement())
+  orderId   Int
+  fromStatus OrderStatus?
+  toStatus OrderStatus
+  changedById Int?
+  changedByRole String    @db.VarChar(20)
+  note      String?     @db.VarChar(255)
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+  @@map("order_status_history")
 }
 
 model OrderItem {
@@ -165,4 +184,17 @@ enum PaymentStatus {
   UNPAID
   PAID
   FAILED
+}
+
+// Liên hệ khách hàng gửi từ trang /contact
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(160)
+  subject   String   @db.VarChar(100)
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("contact_messages")
 }

@@ -3,7 +3,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from '../components/ui/Toast';
 
 // URL cơ sở của backend API (hỗ trợ biến môi trường Vite VITE_API_URL)
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -16,7 +16,7 @@ export const api = axios.create({
 // Request Interceptor: Tự động đính kèm JWT token vào header
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('access_token');
+    const token = sessionStorage.getItem('access_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -38,15 +38,17 @@ api.interceptors.response.use(
       switch (status) {
         case 401: {
           // Xử lý 401: Hết hạn phiên đăng nhập
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('auth_user');
-          toast.error(message || 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!');
-
-          // Chuyển hướng về trang đăng nhập nếu không đang ở trang public
-          if (!window.location.pathname.includes('/login')) {
-            setTimeout(() => {
-              window.location.href = '/login';
-            }, 1200);
+          // Chỉ xóa phiên nếu API có gửi token. Đăng nhập sai mật khẩu (401)
+          // không được xóa phiên đang hoạt động hay tác động tới tab khác.
+          const hadAuthorization = Boolean(error.config?.headers?.Authorization);
+          if (hadAuthorization) {
+            sessionStorage.removeItem('access_token');
+            sessionStorage.removeItem('auth_user');
+            window.dispatchEvent(new Event('bookstore:unauthorized'));
+            toast.error(message || 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!');
+            if (!window.location.pathname.includes('/login')) {
+              window.location.assign('/login');
+            }
           }
           break;
         }
